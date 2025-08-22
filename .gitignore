@@ -1,4 +1,2 @@
-./Server/bin/
-./Server/obj/
-./Client/bin/
-./Client/obj/
+[Oo]bj/
+[Bb]in/
