@@ -4,46 +4,16 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 
-IPAddress ip = IPAddress.Parse("127.0.0.1");
-int port = 8888;
-
-TcpListener listener = new TcpListener(ip, port);
-
-try
+public class Program
 {
-    listener.Start();
-    Console.WriteLine($"[INFO] Servidor iniciado na porta {port}");
-
-    while (true)
+    public static async Task Main(string[] args)
     {
-        Console.WriteLine("[INFO] Aguardando conexão");
-        TcpClient client = await listener.AcceptTcpClientAsync();
-        Console.WriteLine("[INFO] Client conectado");
+        string ip = "127.0.0.1";
+        int port = 8888;
+        Server server = new Server(ip,port);
 
-        NetworkStream stream = client.GetStream();
+        Console.WriteLine($"[INFO] {ip}/{port}");
 
-        byte[] buffer = new byte[1024];
-        int bytesRead = await stream.ReadAsync(buffer, 0, buffer.Length);
-
-        string messageFromCLient = Encoding.UTF8.GetString(buffer, 0, buffer.Length);
-        Console.WriteLine($"[INFO] Mensagem recebida: {messageFromCLient}");
-
-        string response = "Mensagem Recebida";
-        byte[] responseBytes = Encoding.UTF8.GetBytes(response);
-
-        await stream.WriteAsync(responseBytes, 0, responseBytes.Length);
-        Console.WriteLine("[INFO] Mensagem enviada");
-
-        client.Close();
-        Console.WriteLine("[INFO] Conexão com o client fechada. aguardando o próximo.");
-
+        await server.StartAsync();
     }
-}
-catch (Exception e)
-{
-    Console.WriteLine($"[ERROR] {e.Message}");
-}
-finally
-{
-    listener.Stop();
 }
