@@ -1,3 +1,4 @@
+using Serilog;
 using System.Net.Sockets;
 using System.Text;
 
@@ -31,9 +32,9 @@ public class ClientHandler
 
             Nickname = Encoding.UTF8.GetString(buffer,0,bytesRead).Trim();
 
-            Console.WriteLine($"[INFO] setando nickname {Nickname} para client {ClientId}");
+            Log.Information($"setando nickname {Nickname} para client {ClientId}");
 
-            Console.WriteLine($"[INFO] Nickname: {Nickname}");
+            Console.WriteLine($"Nickname: {Nickname}");
 
             while ((bytesRead = await _stream.ReadAsync(buffer, 0, buffer.Length)) > 0)
             {

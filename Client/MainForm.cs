@@ -43,7 +43,9 @@ namespace Client
         {
             try
             {
-                await _networkClient.ConnectAsync("127.0.0.1",8888,nicknameTextBox.Text);
+                int port;
+                int.TryParse(portTextBox.Text, out port);
+                await _networkClient.ConnectAsync(ipTextBox.Text,port,nicknameTextBox.Text);
             }
             catch (Exception ex)
             {
@@ -58,6 +60,8 @@ namespace Client
             {
                 connectButton.Enabled = false;
                 nicknameTextBox.Enabled = false;
+                ipTextBox.Enabled = false;
+                portTextBox.Enabled = false;
                 sendButton.Enabled = true;
                 messageTextBox.Enabled = true;
                 
@@ -67,6 +71,8 @@ namespace Client
         private void OnMessageReceived(string message)
         {
             ChatRichTextBox.AppendText(message + Environment.NewLine);
+            ChatRichTextBox.SelectionStart = ChatRichTextBox.TextLength;
+            ChatRichTextBox.ScrollToCaret();
         }
 
         private void OnServerDisconnected()
@@ -75,6 +81,8 @@ namespace Client
             {
                 connectButton.Enabled = true;
                 nicknameTextBox.Enabled = true;
+                ipTextBox.Enabled = true;
+                portTextBox.Enabled = true;
                 sendButton.Enabled = false;
                 messageTextBox.Enabled = false;
             }));

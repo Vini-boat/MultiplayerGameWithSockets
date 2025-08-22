@@ -3,6 +3,8 @@ using System.Net;
 using System.Collections.Concurrent;
 using System.Net.Sockets;
 
+using Serilog;
+
 public class Server
 {
     private readonly TcpListener _listener;
@@ -12,19 +14,19 @@ public class Server
     public Server(string ip, int port)
     {
         _listener = new TcpListener(IPAddress.Parse(ip), port);
-        Console.WriteLine("[INFO] Servidor iniciado");
+        Log.Information("Servidor iniciado");
     }
 
     public async Task StartAsync()
     {
         _listener.Start();
-        Console.WriteLine("[INFO] Aguardando conexões");
+        Log.Information("Aguardando conexões");
         while (true)
         {
             TcpClient connectedClient = await _listener.AcceptTcpClientAsync();
             string clientId = Guid.NewGuid().ToString();
 
-            Console.WriteLine($"[INFO] client conectado. GUID: {clientId}");
+            Log.Information($"client conectado. GUID: {clientId}");
 
             ClientHandler handler = new ClientHandler(connectedClient, clientId, this);
 
@@ -39,13 +41,13 @@ public class Server
     {
         if (_clients.TryRemove(ClientId, out ClientHandler? removedClient))
         {
-            Console.WriteLine($"[INFO] Cliente {removedClient.Nickname} {ClientId} removido");
+            Log.Information($"Cliente {removedClient.Nickname} {ClientId} removido");
         }
     }
 
     public async Task BroadcastMessageAsync(string ClientId,string message)
     {
-        Console.WriteLine($"[INFO] Broadcast: {message}");
+        Log.Information($"Broadcast: {message}");
         foreach (ClientHandler client in _clients.Values)
         {
             await client.SendMessageAsync(message);

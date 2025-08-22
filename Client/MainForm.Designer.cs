@@ -35,6 +35,10 @@
             nicknameTextBox = new TextBox();
             label2 = new Label();
             connectButton = new Button();
+            label3 = new Label();
+            portTextBox = new TextBox();
+            label4 = new Label();
+            ipTextBox = new TextBox();
             SuspendLayout();
             // 
             // ChatRichTextBox
@@ -79,7 +83,7 @@
             // 
             // nicknameTextBox
             // 
-            nicknameTextBox.Location = new Point(50, 12);
+            nicknameTextBox.Location = new Point(49, 62);
             nicknameTextBox.Name = "nicknameTextBox";
             nicknameTextBox.Size = new Size(100, 23);
             nicknameTextBox.TabIndex = 4;
@@ -87,7 +91,7 @@
             // label2
             // 
             label2.AutoSize = true;
-            label2.Location = new Point(6, 15);
+            label2.Location = new Point(5, 65);
             label2.Name = "label2";
             label2.Size = new Size(31, 15);
             label2.TabIndex = 5;
@@ -95,7 +99,7 @@
             // 
             // connectButton
             // 
-            connectButton.Location = new Point(156, 12);
+            connectButton.Location = new Point(155, 62);
             connectButton.Name = "connectButton";
             connectButton.Size = new Size(75, 23);
             connectButton.TabIndex = 6;
@@ -103,11 +107,49 @@
             connectButton.UseVisualStyleBackColor = true;
             connectButton.Click += connectButton_Click;
             // 
+            // label3
+            // 
+            label3.AutoSize = true;
+            label3.Location = new Point(5, 36);
+            label3.Name = "label3";
+            label3.Size = new Size(29, 15);
+            label3.TabIndex = 8;
+            label3.Text = "Port";
+            // 
+            // portTextBox
+            // 
+            portTextBox.Location = new Point(49, 33);
+            portTextBox.Name = "portTextBox";
+            portTextBox.Size = new Size(100, 23);
+            portTextBox.TabIndex = 7;
+            portTextBox.Text = "8888";
+            // 
+            // label4
+            // 
+            label4.AutoSize = true;
+            label4.Location = new Point(5, 7);
+            label4.Name = "label4";
+            label4.Size = new Size(17, 15);
+            label4.TabIndex = 10;
+            label4.Text = "Ip";
+            // 
+            // ipTextBox
+            // 
+            ipTextBox.Location = new Point(49, 4);
+            ipTextBox.Name = "ipTextBox";
+            ipTextBox.Size = new Size(100, 23);
+            ipTextBox.TabIndex = 9;
+            ipTextBox.Text = "127.0.0.1";
+            // 
             // MainForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 450);
+            Controls.Add(label4);
+            Controls.Add(ipTextBox);
+            Controls.Add(label3);
+            Controls.Add(portTextBox);
             Controls.Add(connectButton);
             Controls.Add(label2);
             Controls.Add(nicknameTextBox);
@@ -130,5 +172,9 @@
         private TextBox nicknameTextBox;
         private Label label2;
         private Button connectButton;
+        private Label label3;
+        private TextBox portTextBox;
+        private Label label4;
+        private TextBox ipTextBox;
     }
 }
