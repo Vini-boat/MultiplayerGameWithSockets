@@ -41,7 +41,7 @@ public class Server
     {
         if (_clients.TryRemove(ClientId, out ClientHandler? removedClient))
         {
-            Log.Information($"Cliente {removedClient.Nickname} {ClientId} removido");
+            Log.Information($"Removendo Client{removedClient.Nickname} {ClientId}");
         }
     }
 

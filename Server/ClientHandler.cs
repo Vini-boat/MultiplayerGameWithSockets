@@ -32,14 +32,12 @@ public class ClientHandler
 
             Nickname = Encoding.UTF8.GetString(buffer,0,bytesRead).Trim();
 
-            Log.Information($"setando nickname {Nickname} para client {ClientId}");
-
-            Console.WriteLine($"Nickname: {Nickname}");
+            Log.Information($"Nickname: {Nickname} para {ClientId}");
 
             while ((bytesRead = await _stream.ReadAsync(buffer, 0, buffer.Length)) > 0)
             {
                 var message = Encoding.UTF8.GetString(buffer, 0, bytesRead).Trim();
-                Console.WriteLine($"[INFO] cliente {Nickname} mandou a mensagem: {message}");
+                Log.Information($"{Nickname} mandou a mensagem: {message}");
                 await _server.BroadcastMessageAsync(ClientId, $"[{Nickname}]: {message}");
             }
 
@@ -47,7 +45,7 @@ public class ClientHandler
         }
         catch (Exception e)
         {
-            Console.WriteLine($"[ERROR] {ClientId} {e.Message}");
+            Log.Error($"{ClientId} {e.Message}");
         }
         finally
         {
@@ -60,13 +58,13 @@ public class ClientHandler
     {
         try
         {
-            Console.WriteLine($"[INFO] mandando mensagem: {message} para {Nickname}");
+            Log.Information($"mandando mensagem: {message} para {Nickname}");
             var messageBytes = Encoding.UTF8.GetBytes(message + Environment.NewLine);
             await _stream.WriteAsync(messageBytes, 0, messageBytes.Length);
         }
         catch (Exception e)
         {
-            Console.WriteLine($"[ERROR] {ClientId} {e.Message}");
+            Log.Error($"{ClientId} {e.Message}");
         }
     }
 }
