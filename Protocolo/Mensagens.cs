@@ -2,7 +2,7 @@
 {
     public static class Mensagens
     {
-        private const char DELIM = ';';
+        public const char DELIM = ';';
         public static class Client
         {
             public enum Commands
@@ -30,6 +30,11 @@
                 CHAT_PRIVATE_TYPING_STOP,
                 CHAT_GROUP_TYPING_START,
                 CHAT_GROUP_TYPING_STOP,
+            }
+            public static Commands ParseCommand(string commandString)
+            {
+                if (!Enum.TryParse(commandString, out Commands command)) { throw new Exception(); }
+                return command;
             }
             public static class User
             {
@@ -110,7 +115,11 @@
                 CHAT_GROUP_TYPING_START,
                 CHAT_GROUP_TYPING_STOP,
             }
-
+            public static Commands ParseCommand(string commandString)
+            {
+                if (!Enum.TryParse(commandString, out Commands command)) { throw new Exception(); }
+                return command;
+            }
             public static class User
             {
                 public static class Create

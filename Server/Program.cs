@@ -3,8 +3,9 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
-
+using Server;
 using Serilog;
+using Server.Services;
 
 public class Program
 {
@@ -20,7 +21,8 @@ public class Program
 
         string ip = "127.0.0.1";
         int port = 8888;
-        Server server = new Server(ip,port);
+
+        ServerManager server = new ServerManager(ip,port);
 
         Log.Information($"{ip}/{port}");
 

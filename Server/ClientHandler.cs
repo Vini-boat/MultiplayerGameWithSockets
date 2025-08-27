@@ -1,53 +1,82 @@
 using Serilog;
 using System.Net.Sockets;
 using System.Text;
+using Protocolo;
+using Server.Services;
+using Server;
+
 
 public class ClientHandler
 {
     private readonly TcpClient _client;
-    private readonly Server _server;
-    private readonly NetworkStream _stream;
+    private readonly ServerManager _server;
+
+    private readonly StreamReader? _reader;
+    private readonly StreamWriter? _writer;
+
+    private readonly UserService _userservice;
 
     public string ClientId { get; }
     public string Nickname { get; private set; }
 
-    public ClientHandler(TcpClient client, string clientId, Server server)
+    public ClientHandler(TcpClient client, string clientId, ServerManager server, Database database)
     {
+        Nickname = "NOT INITIALIZED";
         _client = client;
         ClientId = clientId;
         _server = server;
-        _stream = _client.GetStream();
-        Nickname = "NOT INITIALIZED";
+
+        NetworkStream stream = _client.GetStream();
+        UTF8Encoding utf8WithoutBom = new UTF8Encoding(false);
+        _reader = new StreamReader(stream,utf8WithoutBom);
+        _writer = new StreamWriter(stream,utf8WithoutBom);
+
+        _userservice = new UserService(database);
     }
 
     public async Task HandleClientAsync()
     {
+        if ((_client == null) || (_reader == null)) { throw new InvalidOperationException(); }
         try
         {
-            var buffer = new byte[1024];
-
-            var bytesRead = await _stream.ReadAsync(buffer, 0, buffer.Length);
-
-            if (bytesRead == 0) return;
-
-            Nickname = Encoding.UTF8.GetString(buffer,0,bytesRead).Trim();
-
-            Log.Information($"setando nickname {Nickname} para client {ClientId}");
-
-            Console.WriteLine($"Nickname: {Nickname}");
-
-            while ((bytesRead = await _stream.ReadAsync(buffer, 0, buffer.Length)) > 0)
+            await SendMessageAsync(Mensagens.Server.User.Login.Ok());
+            while (_client.Connected)
             {
-                var message = Encoding.UTF8.GetString(buffer, 0, bytesRead).Trim();
-                Console.WriteLine($"[INFO] cliente {Nickname} mandou a mensagem: {message}");
-                await _server.BroadcastMessageAsync(ClientId, $"[{Nickname}]: {message}");
+                string? message = await _reader.ReadLineAsync();
+                if (message == null) break;
+                Log.Information($"Recebendo mensagem: {message} de {Nickname}");
+                string[] segments = message.Split(Mensagens.DELIM);
+                string[] args = segments[1..];
+
+                string commandString = segments[0];
+                var command = Mensagens.Client.ParseCommand(commandString);
+
+                string? err = null;
+                switch (command)
+                {
+                    case Mensagens.Client.Commands.USER_LOGIN:
+                        err = _userservice.Login(args[0], args[1]);
+                        if (err != null) { await SendMessageAsync(Mensagens.Server.User.Login.Error(err)); }
+                                    else { await SendMessageAsync(Mensagens.Server.User.Login.Ok()); }
+                        break;
+                    case Mensagens.Client.Commands.USER_LOGOUT:
+                        break;
+                    case Mensagens.Client.Commands.USER_CREATE:
+                        err = _userservice.CreateUser(args[0], args[1]);
+                        if (err != null) { await SendMessageAsync(Mensagens.Server.User.Create.Error(err)); }
+                                    else { await SendMessageAsync(Mensagens.Server.User.Create.Ok()); }
+                        break;
+                    case Mensagens.Client.Commands.USER_DELETE:
+                        _userservice.DeleteUser(args[0], args[1]);
+                        if (err != null) { await SendMessageAsync(Mensagens.Server.User.Delete.Error(err)); }
+                                    else { await SendMessageAsync(Mensagens.Server.User.Delete.Ok()); }
+                        break;
+                }
             }
-
-
         }
         catch (Exception e)
         {
-            Console.WriteLine($"[ERROR] {ClientId} {e.Message}");
+            Log.Error($"{ClientId} {e.Message}");
         }
         finally
         {
@@ -58,15 +87,19 @@ public class ClientHandler
 
     public async Task SendMessageAsync(string message)
     {
+        if (_writer == null) { throw new InvalidOperationException(); }
         try
         {
-            Console.WriteLine($"[INFO] mandando mensagem: {message} para {Nickname}");
-            var messageBytes = Encoding.UTF8.GetBytes(message + Environment.NewLine);
-            await _stream.WriteAsync(messageBytes, 0, messageBytes.Length);
+            Log.Information($"mandando mensagem: {message} para {Nickname}");
+
+            if (!string.IsNullOrEmpty(message))
+            {
+                await _writer.WriteLineAsync(message);
+            }
         }
         catch (Exception e)
         {
-            Console.WriteLine($"[ERROR] {ClientId} {e.Message}");
+            Log.Information($"{ClientId} {e.Message}");
         }
     }
 }
