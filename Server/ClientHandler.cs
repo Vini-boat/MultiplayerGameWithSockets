@@ -29,7 +29,7 @@ public class ClientHandler
         NetworkStream stream = _client.GetStream();
         UTF8Encoding utf8WithoutBom = new UTF8Encoding(false);
         _reader = new StreamReader(stream,utf8WithoutBom);
-        _writer = new StreamWriter(stream,utf8WithoutBom);
+        _writer = new StreamWriter(stream,utf8WithoutBom) { AutoFlush = true };
 
         _userservice = new UserService(database);
     }
