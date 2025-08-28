@@ -9,8 +9,14 @@ namespace Client
         static void Main()
         {
             NetworkClient networkClient = new NetworkClient();
+
             ApplicationConfiguration.Initialize();
-            Application.Run(new Login(networkClient));
+            var loginform = new Login(networkClient);
+            if (loginform.ShowDialog() == DialogResult.OK)
+            {
+                Application.Run(new ChatForm(networkClient));
+
+            }
         }
     }
 }

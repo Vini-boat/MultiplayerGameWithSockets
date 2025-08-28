@@ -39,12 +39,11 @@ public class ClientHandler
         if ((_client == null) || (_reader == null)) { throw new InvalidOperationException(); }
         try
         {
-            await SendMessageAsync(Mensagens.Server.User.Login.Ok());
             while (_client.Connected)
             {
                 string? message = await _reader.ReadLineAsync();
                 if (message == null) break;
-                Log.Information($"Recebendo mensagem: {message} de {Nickname}");
+                Log.Information($"Recebendo mensagem: {message} de {ClientId}");
                 string[] segments = message.Split(Mensagens.DELIM);
                 string[] args = segments[1..];
 
@@ -67,9 +66,13 @@ public class ClientHandler
                                     else { await SendMessageAsync(Mensagens.Server.User.Create.Ok()); }
                         break;
                     case Mensagens.Client.Commands.USER_DELETE:
-                        _userservice.DeleteUser(args[0], args[1]);
+                        err = _userservice.DeleteUser(args[0], args[1]);
                         if (err != null) { await SendMessageAsync(Mensagens.Server.User.Delete.Error(err)); }
                                     else { await SendMessageAsync(Mensagens.Server.User.Delete.Ok()); }
+                        break;
+                    case Mensagens.Client.Commands.LIST_CONTACTS:
+                        List<string> contacts = _userservice.GetAllUsers();
+                        await SendMessageAsync(Mensagens.Server.Contacts.List(contacts));
                         break;
                 }
             }
@@ -90,7 +93,7 @@ public class ClientHandler
         if (_writer == null) { throw new InvalidOperationException(); }
         try
         {
-            Log.Information($"mandando mensagem: {message} para {Nickname}");
+            Log.Information($"mandando mensagem: {message} para {ClientId}");
 
             if (!string.IsNullOrEmpty(message))
             {

@@ -33,5 +33,9 @@ namespace Server.Services
             }
             return null;
         }
+        public List<string> GetAllUsers()
+        {
+            return _database.GetAllUsers();
+        }
     }
 }

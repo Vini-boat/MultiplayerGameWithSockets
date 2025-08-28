@@ -20,6 +20,7 @@ namespace Client
             _networkClient = networkclient;
 
             _networkClient.ServerConnected += OnServerConnected;
+            _networkClient.ServerDisconnected += OnServerDisconnected;
             _networkClient.MessageReceived += OnMessageReceived;
         }
 
@@ -56,6 +57,25 @@ namespace Client
                 createNewAccountButton.Enabled = true;
             }));
         }
+        private void OnServerDisconnected()
+        {
+            Invoke(new Action(() =>
+            {
+                connectButton.Enabled = true;
+                nicknameTextBox.Enabled = true;
+                ipTextBox.Enabled = true;
+                portTextBox.Enabled = true;
+                label4.Enabled = true;
+                label3.Enabled = true;
+
+                label2.Enabled = false;
+                label1.Enabled = false;
+                nicknameTextBox.Enabled = false;
+                passwordTextBox.Enabled = false;
+                loginButton.Enabled = false;
+                createNewAccountButton.Enabled = false;
+            }));
+        }
 
         private void OnMessageReceived(string message)
         {
@@ -63,37 +83,63 @@ namespace Client
             string commandString = segments[0];
             string[] args = segments[1..];
             var command = Mensagens.Server.ParseCommand(commandString);
-            Mensagens.Client.Commands commandClient;
             switch (command)
             {
                 case Mensagens.Server.Commands.OK:
-                    commandClient = Mensagens.Client.ParseCommand(args[0]);
-                    switch (commandClient)
-                    {
-                        case Mensagens.Client.Commands.USER_LOGIN:
-                            break;
-                    }
+                    processOk(Mensagens.Client.ParseCommand(args[0]), args);
                     break;
                 case Mensagens.Server.Commands.ERROR:
-                    commandClient = Mensagens.Client.ParseCommand(args[0]);
-                    switch (commandClient)
+                    processError(Mensagens.Client.ParseCommand(args[0]), args);
+                    break;
+            }
+        }
+        protected override void OnFormClosed(FormClosedEventArgs e)
+        {
+            base.OnFormClosed(e);
+            _networkClient.ServerConnected -= OnServerConnected;
+            _networkClient.ServerDisconnected -= OnServerDisconnected;
+            _networkClient.MessageReceived -= OnMessageReceived;
+        }
+
+        private void processOk(Mensagens.Client.Commands commandClient, string[] args)
+        {
+            switch (commandClient)
+            {
+                case Mensagens.Client.Commands.USER_LOGIN:
+                    this.Invoke(new Action(() =>
                     {
-                        case Mensagens.Client.Commands.USER_LOGIN:
-                            MessageBox.Show(args[1], "Erro", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                            break;
-                        case Mensagens.Client.Commands.USER_CREATE:
-                            MessageBox.Show(args[1], "Erro", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                            break;
-                    }
+                        this.DialogResult = DialogResult.OK;
+                        this.Close();
+                    }));
+                    
+                    break;
+                case Mensagens.Client.Commands.USER_CREATE:
+                    MessageBox.Show("Usuário criado com sucesso");
+                    break;
+            }
+        }
+
+        private void processError(Mensagens.Client.Commands commandClient, string[] args)
+        {
+            switch (commandClient)
+            {
+                case Mensagens.Client.Commands.USER_LOGIN:
+                    MessageBox.Show(args[1], "Erro", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    break;
+                case Mensagens.Client.Commands.USER_CREATE:
+                    MessageBox.Show(args[1], "Erro", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     break;
             }
         }
 
         private async void createNewAccountButton_Click(object sender, EventArgs e)
         {
-            await _networkClient.SendMessageAsync(Mensagens.Client.User.Create(nicknameTextBox.Text,passwordTextBox.Text));
+            await _networkClient.SendMessageAsync(Mensagens.Client.User.Create(nicknameTextBox.Text, passwordTextBox.Text));
         }
 
-
+        private async void loginButton_Click(object sender, EventArgs e)
+        {
+            await _networkClient.SendMessageAsync(Mensagens.Client.User.Login(nicknameTextBox.Text, passwordTextBox.Text));
+        }
     }
 }

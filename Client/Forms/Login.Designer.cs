@@ -118,6 +118,7 @@
             passwordTextBox.Enabled = false;
             passwordTextBox.Location = new Point(84, 128);
             passwordTextBox.Name = "passwordTextBox";
+            passwordTextBox.PasswordChar = '*';
             passwordTextBox.Size = new Size(100, 23);
             passwordTextBox.TabIndex = 25;
             // 
@@ -141,6 +142,7 @@
             loginButton.TabIndex = 28;
             loginButton.Text = "Login";
             loginButton.UseVisualStyleBackColor = true;
+            loginButton.Click += loginButton_Click;
             // 
             // Login
             // 

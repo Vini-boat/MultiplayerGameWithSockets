@@ -31,35 +31,36 @@
             splitContainer1 = new SplitContainer();
             tabControl1 = new TabControl();
             Contatos = new TabPage();
-            Grupos = new TabPage();
-            richTextBox1 = new RichTextBox();
-            flowLayoutPanel1 = new FlowLayoutPanel();
-            flowLayoutPanel2 = new FlowLayoutPanel();
-            button1 = new Button();
-            flowLayoutPanel3 = new FlowLayoutPanel();
-            Configurações = new TabPage();
-            textBox1 = new TextBox();
-            button2 = new Button();
-            label1 = new Label();
+            ContactsflowLayoutPanel = new FlowLayoutPanel();
             groupBox1 = new GroupBox();
-            flowLayoutPanel4 = new FlowLayoutPanel();
-            button3 = new Button();
+            label3 = new Label();
+            label1 = new Label();
+            Grupos = new TabPage();
+            flowLayoutPanel3 = new FlowLayoutPanel();
             groupBox2 = new GroupBox();
             label2 = new Label();
+            flowLayoutPanel2 = new FlowLayoutPanel();
+            button1 = new Button();
+            Configurações = new TabPage();
+            flowLayoutPanel4 = new FlowLayoutPanel();
+            button3 = new Button();
+            button2 = new Button();
+            textBox1 = new TextBox();
+            richTextBox1 = new RichTextBox();
             ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
             splitContainer1.Panel1.SuspendLayout();
             splitContainer1.Panel2.SuspendLayout();
             splitContainer1.SuspendLayout();
             tabControl1.SuspendLayout();
             Contatos.SuspendLayout();
-            Grupos.SuspendLayout();
-            flowLayoutPanel1.SuspendLayout();
-            flowLayoutPanel2.SuspendLayout();
-            flowLayoutPanel3.SuspendLayout();
-            Configurações.SuspendLayout();
+            ContactsflowLayoutPanel.SuspendLayout();
             groupBox1.SuspendLayout();
-            flowLayoutPanel4.SuspendLayout();
+            Grupos.SuspendLayout();
+            flowLayoutPanel3.SuspendLayout();
             groupBox2.SuspendLayout();
+            flowLayoutPanel2.SuspendLayout();
+            Configurações.SuspendLayout();
+            flowLayoutPanel4.SuspendLayout();
             SuspendLayout();
             // 
             // splitContainer1
@@ -95,7 +96,7 @@
             // 
             // Contatos
             // 
-            Contatos.Controls.Add(flowLayoutPanel1);
+            Contatos.Controls.Add(ContactsflowLayoutPanel);
             Contatos.Location = new Point(4, 24);
             Contatos.Name = "Contatos";
             Contatos.Padding = new Padding(3);
@@ -103,6 +104,49 @@
             Contatos.TabIndex = 0;
             Contatos.Text = "Contatos";
             Contatos.UseVisualStyleBackColor = true;
+            // 
+            // ContactsflowLayoutPanel
+            // 
+            ContactsflowLayoutPanel.AutoScroll = true;
+            ContactsflowLayoutPanel.Controls.Add(groupBox1);
+            ContactsflowLayoutPanel.Dock = DockStyle.Fill;
+            ContactsflowLayoutPanel.Location = new Point(3, 3);
+            ContactsflowLayoutPanel.Name = "ContactsflowLayoutPanel";
+            ContactsflowLayoutPanel.Size = new Size(252, 416);
+            ContactsflowLayoutPanel.TabIndex = 0;
+            // 
+            // groupBox1
+            // 
+            groupBox1.Controls.Add(label3);
+            groupBox1.Controls.Add(label1);
+            groupBox1.Location = new Point(3, 3);
+            groupBox1.Name = "groupBox1";
+            groupBox1.Size = new Size(228, 47);
+            groupBox1.TabIndex = 0;
+            groupBox1.TabStop = false;
+            groupBox1.Text = "Contato1";
+            // 
+            // label3
+            // 
+            label3.AutoSize = true;
+            label3.BackColor = Color.FromArgb(249, 249, 249);
+            label3.ForeColor = Color.Red;
+            label3.Location = new Point(180, 0);
+            label3.Name = "label3";
+            label3.Size = new Size(43, 15);
+            label3.TabIndex = 1;
+            label3.Text = "Offline";
+            // 
+            // label1
+            // 
+            label1.AutoEllipsis = true;
+            label1.AutoSize = true;
+            label1.Location = new Point(6, 19);
+            label1.MaximumSize = new Size(220, 20);
+            label1.Name = "label1";
+            label1.Size = new Size(216, 20);
+            label1.TabIndex = 0;
+            label1.Text = "10:10 - a a a a a a a a a a a a a a a a a a a a a a a a ";
             // 
             // Grupos
             // 
@@ -116,44 +160,6 @@
             Grupos.Text = "Grupos";
             Grupos.UseVisualStyleBackColor = true;
             // 
-            // richTextBox1
-            // 
-            richTextBox1.Location = new Point(3, 3);
-            richTextBox1.Name = "richTextBox1";
-            richTextBox1.Size = new Size(524, 406);
-            richTextBox1.TabIndex = 0;
-            richTextBox1.Text = "";
-            // 
-            // flowLayoutPanel1
-            // 
-            flowLayoutPanel1.AutoScroll = true;
-            flowLayoutPanel1.Controls.Add(groupBox1);
-            flowLayoutPanel1.Dock = DockStyle.Fill;
-            flowLayoutPanel1.Location = new Point(3, 3);
-            flowLayoutPanel1.Name = "flowLayoutPanel1";
-            flowLayoutPanel1.Size = new Size(252, 416);
-            flowLayoutPanel1.TabIndex = 0;
-            // 
-            // flowLayoutPanel2
-            // 
-            flowLayoutPanel2.AutoSize = true;
-            flowLayoutPanel2.Controls.Add(button1);
-            flowLayoutPanel2.Dock = DockStyle.Top;
-            flowLayoutPanel2.Location = new Point(3, 3);
-            flowLayoutPanel2.Name = "flowLayoutPanel2";
-            flowLayoutPanel2.Size = new Size(252, 31);
-            flowLayoutPanel2.TabIndex = 0;
-            // 
-            // button1
-            // 
-            button1.AutoSize = true;
-            button1.Location = new Point(3, 3);
-            button1.Name = "button1";
-            button1.Size = new Size(81, 25);
-            button1.TabIndex = 0;
-            button1.Text = "Novo grupo";
-            button1.UseVisualStyleBackColor = true;
-            // 
             // flowLayoutPanel3
             // 
             flowLayoutPanel3.AutoScroll = true;
@@ -163,76 +169,6 @@
             flowLayoutPanel3.Name = "flowLayoutPanel3";
             flowLayoutPanel3.Size = new Size(252, 382);
             flowLayoutPanel3.TabIndex = 1;
-            // 
-            // Configurações
-            // 
-            Configurações.Controls.Add(flowLayoutPanel4);
-            Configurações.Location = new Point(4, 24);
-            Configurações.Name = "Configurações";
-            Configurações.Size = new Size(258, 422);
-            Configurações.TabIndex = 2;
-            Configurações.Text = "Configurações";
-            Configurações.UseVisualStyleBackColor = true;
-            // 
-            // textBox1
-            // 
-            textBox1.Location = new Point(3, 415);
-            textBox1.Name = "textBox1";
-            textBox1.Size = new Size(460, 23);
-            textBox1.TabIndex = 1;
-            // 
-            // button2
-            // 
-            button2.AutoSize = true;
-            button2.AutoSizeMode = AutoSizeMode.GrowAndShrink;
-            button2.Location = new Point(469, 413);
-            button2.Name = "button2";
-            button2.Size = new Size(49, 25);
-            button2.TabIndex = 2;
-            button2.Text = "Enviar";
-            button2.UseVisualStyleBackColor = true;
-            // 
-            // label1
-            // 
-            label1.AutoEllipsis = true;
-            label1.AutoSize = true;
-            label1.Location = new Point(6, 19);
-            label1.MaximumSize = new Size(220, 20);
-            label1.Name = "label1";
-            label1.Size = new Size(216, 20);
-            label1.TabIndex = 0;
-            label1.Text = "10:10 - a a a a a a a a a a a a a a a a a a a a a a a a ";
-            // 
-            // groupBox1
-            // 
-            groupBox1.Controls.Add(label1);
-            groupBox1.Location = new Point(3, 3);
-            groupBox1.Name = "groupBox1";
-            groupBox1.Size = new Size(228, 47);
-            groupBox1.TabIndex = 0;
-            groupBox1.TabStop = false;
-            groupBox1.Text = "Contato1";
-            // 
-            // flowLayoutPanel4
-            // 
-            flowLayoutPanel4.Controls.Add(button3);
-            flowLayoutPanel4.Dock = DockStyle.Fill;
-            flowLayoutPanel4.FlowDirection = FlowDirection.RightToLeft;
-            flowLayoutPanel4.Location = new Point(0, 0);
-            flowLayoutPanel4.Name = "flowLayoutPanel4";
-            flowLayoutPanel4.Size = new Size(258, 422);
-            flowLayoutPanel4.TabIndex = 0;
-            // 
-            // button3
-            // 
-            button3.AutoSize = true;
-            button3.AutoSizeMode = AutoSizeMode.GrowAndShrink;
-            button3.Location = new Point(219, 3);
-            button3.Name = "button3";
-            button3.Size = new Size(36, 25);
-            button3.TabIndex = 0;
-            button3.Text = "Sair";
-            button3.UseVisualStyleBackColor = true;
             // 
             // groupBox2
             // 
@@ -255,6 +191,84 @@
             label2.TabIndex = 0;
             label2.Text = "10:10 - [Nick] - a a a a a a a a a a a a a a a a a a a a a ";
             // 
+            // flowLayoutPanel2
+            // 
+            flowLayoutPanel2.AutoSize = true;
+            flowLayoutPanel2.Controls.Add(button1);
+            flowLayoutPanel2.Dock = DockStyle.Top;
+            flowLayoutPanel2.Location = new Point(3, 3);
+            flowLayoutPanel2.Name = "flowLayoutPanel2";
+            flowLayoutPanel2.Size = new Size(252, 31);
+            flowLayoutPanel2.TabIndex = 0;
+            // 
+            // button1
+            // 
+            button1.AutoSize = true;
+            button1.Location = new Point(3, 3);
+            button1.Name = "button1";
+            button1.Size = new Size(81, 25);
+            button1.TabIndex = 0;
+            button1.Text = "Novo grupo";
+            button1.UseVisualStyleBackColor = true;
+            // 
+            // Configurações
+            // 
+            Configurações.Controls.Add(flowLayoutPanel4);
+            Configurações.Location = new Point(4, 24);
+            Configurações.Name = "Configurações";
+            Configurações.Size = new Size(258, 422);
+            Configurações.TabIndex = 2;
+            Configurações.Text = "Configurações";
+            Configurações.UseVisualStyleBackColor = true;
+            // 
+            // flowLayoutPanel4
+            // 
+            flowLayoutPanel4.Controls.Add(button3);
+            flowLayoutPanel4.Dock = DockStyle.Fill;
+            flowLayoutPanel4.FlowDirection = FlowDirection.RightToLeft;
+            flowLayoutPanel4.Location = new Point(0, 0);
+            flowLayoutPanel4.Name = "flowLayoutPanel4";
+            flowLayoutPanel4.Size = new Size(258, 422);
+            flowLayoutPanel4.TabIndex = 0;
+            // 
+            // button3
+            // 
+            button3.AutoSize = true;
+            button3.AutoSizeMode = AutoSizeMode.GrowAndShrink;
+            button3.Location = new Point(219, 3);
+            button3.Name = "button3";
+            button3.Size = new Size(36, 25);
+            button3.TabIndex = 0;
+            button3.Text = "Sair";
+            button3.UseVisualStyleBackColor = true;
+            // 
+            // button2
+            // 
+            button2.AutoSize = true;
+            button2.AutoSizeMode = AutoSizeMode.GrowAndShrink;
+            button2.Location = new Point(469, 413);
+            button2.Name = "button2";
+            button2.Size = new Size(49, 25);
+            button2.TabIndex = 2;
+            button2.Text = "Enviar";
+            button2.UseVisualStyleBackColor = true;
+            button2.Click += button2_Click_1;
+            // 
+            // textBox1
+            // 
+            textBox1.Location = new Point(3, 415);
+            textBox1.Name = "textBox1";
+            textBox1.Size = new Size(460, 23);
+            textBox1.TabIndex = 1;
+            // 
+            // richTextBox1
+            // 
+            richTextBox1.Location = new Point(3, 3);
+            richTextBox1.Name = "richTextBox1";
+            richTextBox1.Size = new Size(524, 406);
+            richTextBox1.TabIndex = 0;
+            richTextBox1.Text = "";
+            // 
             // ChatForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -263,6 +277,7 @@
             Controls.Add(splitContainer1);
             Name = "ChatForm";
             Text = "ChatForm";
+            Load += ChatForm_Load;
             splitContainer1.Panel1.ResumeLayout(false);
             splitContainer1.Panel2.ResumeLayout(false);
             splitContainer1.Panel2.PerformLayout();
@@ -270,19 +285,19 @@
             splitContainer1.ResumeLayout(false);
             tabControl1.ResumeLayout(false);
             Contatos.ResumeLayout(false);
-            Grupos.ResumeLayout(false);
-            Grupos.PerformLayout();
-            flowLayoutPanel1.ResumeLayout(false);
-            flowLayoutPanel2.ResumeLayout(false);
-            flowLayoutPanel2.PerformLayout();
-            flowLayoutPanel3.ResumeLayout(false);
-            Configurações.ResumeLayout(false);
+            ContactsflowLayoutPanel.ResumeLayout(false);
             groupBox1.ResumeLayout(false);
             groupBox1.PerformLayout();
-            flowLayoutPanel4.ResumeLayout(false);
-            flowLayoutPanel4.PerformLayout();
+            Grupos.ResumeLayout(false);
+            Grupos.PerformLayout();
+            flowLayoutPanel3.ResumeLayout(false);
             groupBox2.ResumeLayout(false);
             groupBox2.PerformLayout();
+            flowLayoutPanel2.ResumeLayout(false);
+            flowLayoutPanel2.PerformLayout();
+            Configurações.ResumeLayout(false);
+            flowLayoutPanel4.ResumeLayout(false);
+            flowLayoutPanel4.PerformLayout();
             ResumeLayout(false);
         }
 
@@ -291,7 +306,7 @@
         private SplitContainer splitContainer1;
         private TabControl tabControl1;
         private TabPage Contatos;
-        private FlowLayoutPanel flowLayoutPanel1;
+        private FlowLayoutPanel ContactsflowLayoutPanel;
         private TabPage Grupos;
         private FlowLayoutPanel flowLayoutPanel2;
         private Button button1;
@@ -306,5 +321,6 @@
         private Button button3;
         private GroupBox groupBox2;
         private Label label2;
+        private Label label3;
     }
 }

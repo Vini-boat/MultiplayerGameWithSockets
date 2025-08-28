@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using Microsoft.Data.Sqlite;
+using Serilog;
 
 namespace Server
 {
@@ -77,19 +79,16 @@ namespace Server
 
         public bool Autenticate(string nickname, string password)
         {
-            using (var conn = new SqliteConnection(_connectionString))
-            {
-                conn.Open();
-                var command = conn.CreateCommand();
-                command.CommandText = "SELECT COUNT(1) FROM Users WHERE Nickname = @nickname AND Password = @password";
-                command.Parameters.AddWithValue("@nickname", nickname);
-                command.Parameters.AddWithValue("@password", password);
+            using var conn = new SqliteConnection(_connectionString);
+            
+            conn.Open();
+            var command = conn.CreateCommand();
+            command.CommandText = "SELECT Password FROM Users WHERE Nickname = @nickname";
+            command.Parameters.AddWithValue("@nickname", nickname);
 
-                using (var reader = command.ExecuteReader())
-                {
-                    return reader.HasRows;
-                }
-            }
+            using var reader = command.ExecuteReader(CommandBehavior.SingleRow);
+            if (!reader.Read()) return false;
+            return (string)reader["Password"] == password;
         }
     }
 }

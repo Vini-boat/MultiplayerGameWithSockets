@@ -46,7 +46,6 @@ public class NetworkClient
                 string? message = await _reader.ReadLineAsync();
                 if (message != null)
                 {
-                    MessageBox.Show($"Recebendo mensagem: {message} do servidor");
                     MessageReceived?.Invoke(message);
                 }
                 else
@@ -70,7 +69,6 @@ public class NetworkClient
         if (_writer == null) { throw new InvalidOperationException(); }
         if (!string.IsNullOrEmpty(message))
         {
-            MessageBox.Show($"Enviando mensagem: {message} para o servidor");
             await _writer.WriteLineAsync(message);
         }
     }

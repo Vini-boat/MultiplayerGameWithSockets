@@ -45,7 +45,7 @@ namespace Server
         {
             if (_clients.TryRemove(ClientId, out ClientHandler? removedClient))
             {
-                Log.Information($"Cliente {removedClient.Nickname} {ClientId} removido");
+                Log.Information($"Cliente {removedClient.ClientId} {ClientId} removido");
             }
         }
 
