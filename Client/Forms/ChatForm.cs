@@ -47,6 +47,12 @@ namespace Client
                         AddContactGroupBox(contactName);
                     }
                     break;
+                case Mensagens.Server.Commands.CHAT_PRIVATE_MESSAGE_LIST:
+                    foreach (string m in args[0].Split(','))
+                    {
+                        ChatRichTextBox.AppendText(m + Environment.NewLine);
+                    }
+                    break;
             }
         }
 
@@ -77,18 +83,24 @@ namespace Client
                 contactGroupBox.TabIndex = 0;
                 contactGroupBox.TabStop = false;
                 contactGroupBox.Text = name;
-                contactGroupBox.Controls.Add(new Label()
+                var label_status = new Label()
                 {
+                    Name = $"Status_{name}",
                     AutoSize = true,
                     BackColor = Color.FromArgb(249, 249, 249),
                     ForeColor = Color.Red,
                     Location = new Point(180, 0),
                     Size = new Size(43, 15),
                     TabIndex = 1,
-                    Text = "Offline",
-                });
-                contactGroupBox.Controls.Add(new Label()
+                    Text = "Offline"
+                };
+                label_status.Click += label_groupBox_MouseClick;
+
+                contactGroupBox.Controls.Add(label_status);
+
+                var label_last_message = new Label()
                 {
+                    Name = $"lastMessage_{name}",
                     AutoEllipsis = true,
                     AutoSize = true,
                     Location = new Point(6, 19),
@@ -96,7 +108,10 @@ namespace Client
                     Size = new Size(216, 20),
                     TabIndex = 0,
                     Text = "temp",
-                });
+                };
+                label_last_message.Click += label_groupBox_MouseClick;
+                contactGroupBox.Controls.Add(label_last_message);
+                contactGroupBox.MouseClick += groupBox_MouseClick;
                 ContactsflowLayoutPanel.Controls.Add(contactGroupBox);
             }));
         }
@@ -104,6 +119,24 @@ namespace Client
         private void button2_Click_1(object sender, EventArgs e)
         {
             AddContactGroupBox("teste");
+        }
+
+        private void groupBox_MouseClick(object sender, EventArgs e)
+        {
+            var gb = (GroupBox)sender;
+            LoadMessagesOnScreen(gb.Text);
+        }
+
+        private void label_groupBox_MouseClick(object sender, EventArgs e)
+        {
+            var label = (Label)sender;
+            LoadMessagesOnScreen(label.Parent?.Text);
+        }
+        
+        private async void LoadMessagesOnScreen(string contact)
+        {
+            ChatRichTextBox.Clear();
+            await _networkClient.SendMessageAsync(Mensagens.Client.Chat.Private.ListMessages(contact));
         }
     }
 }

@@ -32,9 +32,6 @@
             tabControl1 = new TabControl();
             Contatos = new TabPage();
             ContactsflowLayoutPanel = new FlowLayoutPanel();
-            groupBox1 = new GroupBox();
-            label3 = new Label();
-            label1 = new Label();
             Grupos = new TabPage();
             flowLayoutPanel3 = new FlowLayoutPanel();
             groupBox2 = new GroupBox();
@@ -46,15 +43,13 @@
             button3 = new Button();
             button2 = new Button();
             textBox1 = new TextBox();
-            richTextBox1 = new RichTextBox();
+            ChatRichTextBox = new RichTextBox();
             ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
             splitContainer1.Panel1.SuspendLayout();
             splitContainer1.Panel2.SuspendLayout();
             splitContainer1.SuspendLayout();
             tabControl1.SuspendLayout();
             Contatos.SuspendLayout();
-            ContactsflowLayoutPanel.SuspendLayout();
-            groupBox1.SuspendLayout();
             Grupos.SuspendLayout();
             flowLayoutPanel3.SuspendLayout();
             groupBox2.SuspendLayout();
@@ -77,7 +72,7 @@
             // 
             splitContainer1.Panel2.Controls.Add(button2);
             splitContainer1.Panel2.Controls.Add(textBox1);
-            splitContainer1.Panel2.Controls.Add(richTextBox1);
+            splitContainer1.Panel2.Controls.Add(ChatRichTextBox);
             splitContainer1.Size = new Size(800, 450);
             splitContainer1.SplitterDistance = 266;
             splitContainer1.TabIndex = 0;
@@ -108,45 +103,11 @@
             // ContactsflowLayoutPanel
             // 
             ContactsflowLayoutPanel.AutoScroll = true;
-            ContactsflowLayoutPanel.Controls.Add(groupBox1);
             ContactsflowLayoutPanel.Dock = DockStyle.Fill;
             ContactsflowLayoutPanel.Location = new Point(3, 3);
             ContactsflowLayoutPanel.Name = "ContactsflowLayoutPanel";
             ContactsflowLayoutPanel.Size = new Size(252, 416);
             ContactsflowLayoutPanel.TabIndex = 0;
-            // 
-            // groupBox1
-            // 
-            groupBox1.Controls.Add(label3);
-            groupBox1.Controls.Add(label1);
-            groupBox1.Location = new Point(3, 3);
-            groupBox1.Name = "groupBox1";
-            groupBox1.Size = new Size(228, 47);
-            groupBox1.TabIndex = 0;
-            groupBox1.TabStop = false;
-            groupBox1.Text = "Contato1";
-            // 
-            // label3
-            // 
-            label3.AutoSize = true;
-            label3.BackColor = Color.FromArgb(249, 249, 249);
-            label3.ForeColor = Color.Red;
-            label3.Location = new Point(180, 0);
-            label3.Name = "label3";
-            label3.Size = new Size(43, 15);
-            label3.TabIndex = 1;
-            label3.Text = "Offline";
-            // 
-            // label1
-            // 
-            label1.AutoEllipsis = true;
-            label1.AutoSize = true;
-            label1.Location = new Point(6, 19);
-            label1.MaximumSize = new Size(220, 20);
-            label1.Name = "label1";
-            label1.Size = new Size(216, 20);
-            label1.TabIndex = 0;
-            label1.Text = "10:10 - a a a a a a a a a a a a a a a a a a a a a a a a ";
             // 
             // Grupos
             // 
@@ -261,13 +222,13 @@
             textBox1.Size = new Size(460, 23);
             textBox1.TabIndex = 1;
             // 
-            // richTextBox1
+            // ChatRichTextBox
             // 
-            richTextBox1.Location = new Point(3, 3);
-            richTextBox1.Name = "richTextBox1";
-            richTextBox1.Size = new Size(524, 406);
-            richTextBox1.TabIndex = 0;
-            richTextBox1.Text = "";
+            ChatRichTextBox.Location = new Point(3, 3);
+            ChatRichTextBox.Name = "ChatRichTextBox";
+            ChatRichTextBox.Size = new Size(524, 406);
+            ChatRichTextBox.TabIndex = 0;
+            ChatRichTextBox.Text = "";
             // 
             // ChatForm
             // 
@@ -285,9 +246,6 @@
             splitContainer1.ResumeLayout(false);
             tabControl1.ResumeLayout(false);
             Contatos.ResumeLayout(false);
-            ContactsflowLayoutPanel.ResumeLayout(false);
-            groupBox1.ResumeLayout(false);
-            groupBox1.PerformLayout();
             Grupos.ResumeLayout(false);
             Grupos.PerformLayout();
             flowLayoutPanel3.ResumeLayout(false);
@@ -310,17 +268,14 @@
         private TabPage Grupos;
         private FlowLayoutPanel flowLayoutPanel2;
         private Button button1;
-        private RichTextBox richTextBox1;
+        private RichTextBox ChatRichTextBox;
         private FlowLayoutPanel flowLayoutPanel3;
         private TabPage Configurações;
         private Button button2;
         private TextBox textBox1;
-        private GroupBox groupBox1;
-        private Label label1;
         private FlowLayoutPanel flowLayoutPanel4;
         private Button button3;
         private GroupBox groupBox2;
         private Label label2;
-        private Label label3;
     }
 }
