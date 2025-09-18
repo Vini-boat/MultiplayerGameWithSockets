@@ -29,6 +29,10 @@ namespace Server.Services
             bool ok = _database.Autenticate(username, password);
             if (!ok)
             {
+                if (_database.IsUserOnline(username))
+                {
+                    return "Usuário já conectado";
+                }
                 return "Username ou senha inválidos";
             }
             bool statusChanged = _database.ChangeUserStatus(username, true);

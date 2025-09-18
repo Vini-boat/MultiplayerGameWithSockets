@@ -97,11 +97,11 @@ namespace Client
             }
         }
 
-        private void AddMessageOnScreen(string sender, string message)
+        private void AddMessageOnScreen(string sender, string message, DateTime timestamp)
         {
             Invoke(new Action(() =>
             {
-                ChatRichTextBox.AppendText($"[{sender}]:\t{message}{Environment.NewLine}");
+                ChatRichTextBox.AppendText($"{timestamp.ToString("HH:mm:ss")} [{sender}]:\t{message}{Environment.NewLine}");
             }));
         }
         private void ReceivePrivateMessage(string contact,string sender, string message)
@@ -110,7 +110,7 @@ namespace Client
             if (sender != Nickname) ChangeContactLastMessage(contact, message);
             if (_currentContact == contact)
             {
-                AddMessageOnScreen(sender, message);
+                AddMessageOnScreen(sender, message,DateTime.Now);
             }
         }
 
@@ -119,7 +119,7 @@ namespace Client
             _messageStore.AddGroupMessage(group, sender, message);
             if(_currentGroup == group)
             {
-                AddMessageOnScreen(sender,message);
+                AddMessageOnScreen(sender,message,DateTime.Now);
             }
         }
 
@@ -218,7 +218,7 @@ namespace Client
             ChatRichTextBox.Clear();
             foreach (var message in _messageStore.GetContactMessages(contact))
             {
-                AddMessageOnScreen(message.Sender, message.Content);
+                AddMessageOnScreen(message.Sender, message.Content, message.Timestamp);
             }
         }
 

@@ -128,11 +128,13 @@ namespace Server
             
             conn.Open();
             var command = conn.CreateCommand();
-            command.CommandText = "SELECT Password FROM Users WHERE Nickname = @nickname";
+            command.CommandText = "SELECT Password,Online FROM Users WHERE Nickname = @nickname";
             command.Parameters.AddWithValue("@nickname", nickname);
 
             using var reader = command.ExecuteReader(CommandBehavior.SingleRow);
             if (!reader.Read()) return false;
+
+            if ((Int64)reader["Online"] == 1) return false;
             return (string)reader["Password"] == password;
         }
     }
