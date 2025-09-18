@@ -17,11 +17,10 @@ public class ClientHandler
     private readonly UserService _userservice;
 
     public string ClientId { get; }
-    public string Nickname { get; private set; }
+    public string Nickname { get; private set; } = string.Empty;
 
     public ClientHandler(TcpClient client, string clientId, ServerManager server, Database database)
     {
-        Nickname = "NOT INITIALIZED";
         _client = client;
         ClientId = clientId;
         _server = server;
@@ -39,7 +38,8 @@ public class ClientHandler
         if ((_client == null) || (_reader == null)) { throw new InvalidOperationException(); }
         try
         {
-            while (_client.Connected)
+            bool run = true;
+            while (_client.Connected && run)
             {
                 string? message = await _reader.ReadLineAsync();
                 if (message == null) break;
@@ -55,15 +55,25 @@ public class ClientHandler
                 {
                     case Mensagens.Client.Commands.USER_LOGIN:
                         err = _userservice.Login(args[0], args[1]);
-                        if (err != null) { await SendMessageAsync(Mensagens.Server.User.Login.Error(err)); }
-                                    else { await SendMessageAsync(Mensagens.Server.User.Login.Ok()); }
+                        if (err != null) { await SendMessageAsync(Mensagens.Server.User.Login.Error(err)); break; }
+                        Nickname = args[0];
+                        await SendMessageAsync(Mensagens.Server.User.Login.Ok());
+                        await _server.BroadcastMessageAsync(ClientId,Mensagens.Server.Contacts.Online(args[0]));
                         break;
                     case Mensagens.Client.Commands.USER_LOGOUT:
+                        if (Nickname == null) { await SendMessageAsync(Mensagens.Server.User.Logout.Error("Usuário não está logado")); break; }
+                        err = _userservice.Logout(Nickname);
+                        if (err != null) { await SendMessageAsync(Mensagens.Server.User.Logout.Error(err)); break; }
+                        run = false;
+                        await SendMessageAsync(Mensagens.Server.User.Logout.Ok());
                         break;
                     case Mensagens.Client.Commands.USER_CREATE:
                         err = _userservice.CreateUser(args[0], args[1]);
-                        if (err != null) { await SendMessageAsync(Mensagens.Server.User.Create.Error(err)); }
-                                    else { await SendMessageAsync(Mensagens.Server.User.Create.Ok()); }
+                        if (err != null) { await SendMessageAsync(Mensagens.Server.User.Create.Error(err)); break; }
+
+                        await SendMessageAsync(Mensagens.Server.User.Create.Ok());
+                        await _server.BroadcastMessageAsync(ClientId,Mensagens.Server.Contacts.Created(args[0]));
+                        
                         break;
                     case Mensagens.Client.Commands.USER_DELETE:
                         err = _userservice.DeleteUser(args[0], args[1]);
@@ -74,6 +84,21 @@ public class ClientHandler
                         List<string> contacts = _userservice.GetAllUsers();
                         await SendMessageAsync(Mensagens.Server.Contacts.List(contacts));
                         break;
+                    case Mensagens.Client.Commands.CONTACT_STATUS:
+                        bool isOnline = _userservice.GetUserStatus(args[0]);
+                        if (isOnline)
+                        {
+                            await SendMessageAsync(Mensagens.Server.Contacts.Online(args[0]));
+                        }
+                        else
+                        {
+                            await SendMessageAsync(Mensagens.Server.Contacts.Offline(args[0]));
+                        }
+                        break;
+                    case Mensagens.Client.Commands.CHAT_PRIVATE_MESSAGE:
+                        if (Nickname == null) break;
+                        await _server.SendMessageToAsync(args[0], Mensagens.Server.Chat.Private.SendMessage(Nickname, args[1]));
+                        break;
                 }
             }
         }
@@ -83,8 +108,21 @@ public class ClientHandler
         }
         finally
         {
+            Logout();
             _server.UnregisterClient(ClientId);
             _client.Close();
+        }
+    }
+
+    public void Logout()
+    {
+        if (Nickname != null)
+        {
+            string? err = _userservice.Logout(Nickname);
+            if (err == null)
+            {
+                _server.BroadcastMessageAsync(ClientId, Mensagens.Server.Contacts.Offline(Nickname)).Wait();
+            }
         }
     }
 

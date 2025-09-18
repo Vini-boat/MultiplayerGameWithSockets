@@ -41,8 +41,8 @@
             Configurações = new TabPage();
             flowLayoutPanel4 = new FlowLayoutPanel();
             button3 = new Button();
-            button2 = new Button();
-            textBox1 = new TextBox();
+            sendButton = new Button();
+            messageTextBox = new TextBox();
             ChatRichTextBox = new RichTextBox();
             ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
             splitContainer1.Panel1.SuspendLayout();
@@ -70,8 +70,8 @@
             // 
             // splitContainer1.Panel2
             // 
-            splitContainer1.Panel2.Controls.Add(button2);
-            splitContainer1.Panel2.Controls.Add(textBox1);
+            splitContainer1.Panel2.Controls.Add(sendButton);
+            splitContainer1.Panel2.Controls.Add(messageTextBox);
             splitContainer1.Panel2.Controls.Add(ChatRichTextBox);
             splitContainer1.Size = new Size(800, 450);
             splitContainer1.SplitterDistance = 266;
@@ -203,24 +203,25 @@
             button3.Text = "Sair";
             button3.UseVisualStyleBackColor = true;
             // 
-            // button2
+            // sendButton
             // 
-            button2.AutoSize = true;
-            button2.AutoSizeMode = AutoSizeMode.GrowAndShrink;
-            button2.Location = new Point(469, 413);
-            button2.Name = "button2";
-            button2.Size = new Size(49, 25);
-            button2.TabIndex = 2;
-            button2.Text = "Enviar";
-            button2.UseVisualStyleBackColor = true;
-            button2.Click += button2_Click_1;
+            sendButton.AutoSize = true;
+            sendButton.AutoSizeMode = AutoSizeMode.GrowAndShrink;
+            sendButton.Location = new Point(469, 413);
+            sendButton.Name = "sendButton";
+            sendButton.Size = new Size(49, 25);
+            sendButton.TabIndex = 2;
+            sendButton.Text = "Enviar";
+            sendButton.UseVisualStyleBackColor = true;
+            sendButton.Click += sendButton_Click;
             // 
-            // textBox1
+            // messageTextBox
             // 
-            textBox1.Location = new Point(3, 415);
-            textBox1.Name = "textBox1";
-            textBox1.Size = new Size(460, 23);
-            textBox1.TabIndex = 1;
+            messageTextBox.Location = new Point(3, 415);
+            messageTextBox.Name = "messageTextBox";
+            messageTextBox.Size = new Size(460, 23);
+            messageTextBox.TabIndex = 1;
+            messageTextBox.KeyDown += messageTextBox_KeyDown;
             // 
             // ChatRichTextBox
             // 
@@ -237,7 +238,6 @@
             ClientSize = new Size(800, 450);
             Controls.Add(splitContainer1);
             Name = "ChatForm";
-            Text = "ChatForm";
             Load += ChatForm_Load;
             splitContainer1.Panel1.ResumeLayout(false);
             splitContainer1.Panel2.ResumeLayout(false);
@@ -271,8 +271,8 @@
         private RichTextBox ChatRichTextBox;
         private FlowLayoutPanel flowLayoutPanel3;
         private TabPage Configurações;
-        private Button button2;
-        private TextBox textBox1;
+        private Button sendButton;
+        private TextBox messageTextBox;
         private FlowLayoutPanel flowLayoutPanel4;
         private Button button3;
         private GroupBox groupBox2;

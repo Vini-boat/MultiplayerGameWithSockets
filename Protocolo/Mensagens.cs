@@ -14,6 +14,8 @@
 
                 LIST_CONTACTS,
                 LIST_GROUPS,
+
+                CONTACT_STATUS,
                 
                 GROUP_CREATE,
                 GROUP_DELETE,
@@ -47,6 +49,7 @@
             public static class Contacts
             {
                 public static string ListAll() => $"{Commands.LIST_CONTACTS}";
+                public static string Status(string contact) => $"{Commands.CONTACT_STATUS}{DELIM}{contact}";
             }
 
             public static class Groups
@@ -97,6 +100,8 @@
                 CONTACTS_LIST,
                 CONTACT_CREATED,
                 CONTACT_DELETED,
+                CONTACT_ONLINE,
+                CONTACT_OFFLINE,
 
                 GROUP_LIST,
                 GROUP_CREATED,
@@ -139,6 +144,11 @@
                     public static string Ok() => $"{Commands.OK}{DELIM}{Client.Commands.USER_LOGIN}";
                     public static string Error(string error) => $"{Commands.ERROR}{DELIM}{Client.Commands.USER_LOGIN}{DELIM}{error}";
                 }
+                public static class Logout
+                {
+                    public static string Ok() => $"{Commands.OK}{DELIM}{Client.Commands.USER_LOGOUT}";
+                    public static string Error(string error) => $"{Commands.ERROR}{DELIM}{Client.Commands.USER_LOGOUT}{DELIM}{error}";
+                }
             }
 
             public static class Contacts
@@ -146,6 +156,9 @@
                 public static string List(List<string> contacts) => $"{Commands.CONTACTS_LIST}{DELIM}{string.Join(",",contacts)}";
                 public static string Created(string contact) => $"{Commands.CONTACT_CREATED}{DELIM}{contact}";
                 public static string Deleted(string contact) => $"{Commands.CONTACT_CREATED}{DELIM}{contact}";
+                public static string Online(string contact) => $"{Commands.CONTACT_ONLINE}{DELIM}{contact}";
+                public static string Offline(string contact) => $"{Commands.CONTACT_OFFLINE}{DELIM}{contact}";
+
             }
 
             public static class Group
@@ -173,7 +186,7 @@
                 public static class Group
                 {
                     public static string ListMessages(string groupName) => $"{Commands.CHAT_GROUP_MESSAGE_LIST}{DELIM}{groupName}";
-                    public static string SendMessage(string group, string message) => $"{Commands.CHAT_GROUP_MESSAGE}{DELIM}{group}{DELIM}{message}";
+                    public static string SendMessage(string group,string sender, string message) => $"{Commands.CHAT_GROUP_MESSAGE}{DELIM}{group}{DELIM}{sender}{DELIM}{message}";
 
                     public static class User
                     {

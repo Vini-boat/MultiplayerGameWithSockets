@@ -14,6 +14,7 @@ namespace Client
     public partial class Login : Form
     {
         private readonly NetworkClient _networkClient;
+        public string Nickname => nicknameTextBox.Text;
         public Login(NetworkClient networkclient)
         {
             InitializeComponent();

@@ -4,6 +4,7 @@ using System.Collections.Concurrent;
 using System.Net.Sockets;
 
 using Serilog;
+using Protocolo;
 
 namespace Server
 {
@@ -46,14 +47,23 @@ namespace Server
             if (_clients.TryRemove(ClientId, out ClientHandler? removedClient))
             {
                 Log.Information($"Cliente {removedClient.ClientId} {ClientId} removido");
+                
             }
         }
 
-        public async Task BroadcastMessageAsync(string ClientId, string message)
+        public async Task SendMessageToAsync(string to, string message)
+        {
+            ClientHandler? toReceive = _clients.Values.FirstOrDefault(c => c.Nickname == to);
+            if (toReceive == null) return;
+            await toReceive.SendMessageAsync(message);
+        }
+
+        public async Task BroadcastMessageAsync(string from,string message)
         {
             Log.Information($"Broadcast: {message}");
             foreach (ClientHandler client in _clients.Values)
             {
+                if (client.ClientId == from) continue;
                 await client.SendMessageAsync(message);
             }
         }

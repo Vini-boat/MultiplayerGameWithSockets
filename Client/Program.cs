@@ -14,7 +14,7 @@ namespace Client
             var loginform = new Login(networkClient);
             if (loginform.ShowDialog() == DialogResult.OK)
             {
-                Application.Run(new ChatForm(networkClient));
+                Application.Run(new ChatForm(networkClient, loginform.Nickname));
 
             }
         }

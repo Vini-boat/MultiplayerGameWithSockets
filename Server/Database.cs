@@ -22,15 +22,37 @@ namespace Server
             {
                 connection.Open();
                 var command = connection.CreateCommand();
-                command.CommandText = 
+                command.CommandText =
                     @"
                         CREATE TABLE IF NOT EXISTS Users (
                             Id INTEGER PRIMARY KEY AUTOINCREMENT,
                             Nickname TEXT NOT NULL UNIQUE,
-                            Password TEXT NOT NULL
+                            Password TEXT NOT NULL,
+                            Online BOOLEAN DEFAULT FALSE
                         )
                     ";
                 command.ExecuteNonQuery();
+                command.CommandText =
+                    @"
+                        CREATE TABLE IF NOT EXISTS Groups (
+                            Id INTEGER PRIMARY KEY AUTOINCREMENT,
+                            Name TEXT NOT NULL UNIQUE
+                        )
+                    ";
+                command.ExecuteNonQuery();
+                command.CommandText =
+                    @"
+                        CREATE TABLE IF NOT EXISTS GroupUsers (
+                            UserId INTEGER NOT NULL,
+                            GroupId INTEGER NOT NULL,   
+                            PRIMARY KEY (UserId, GroupId),
+                            FOREIGN KEY (UserId) REFERENCES Users(Id) ON DELETE CASCADE,
+                            FOREIGN KEY (GroupId) REFERENCES Groups(Id) ON DELETE CASCADE
+                        )
+                    ";
+                command.ExecuteNonQuery();
+
+
             }
         }
 
@@ -55,6 +77,29 @@ namespace Server
                 }
 
             }
+        }
+        public bool ChangeUserStatus(string nickname, bool online)
+        {
+            using var conn = new SqliteConnection(_connectionString);
+            conn.Open();
+            var command = conn.CreateCommand();
+            command.CommandText = "UPDATE Users SET Online = @online WHERE Nickname = @nickname";
+            command.Parameters.AddWithValue("@online", online);
+            command.Parameters.AddWithValue("@nickname", nickname);
+            int rowsAffected = command.ExecuteNonQuery();
+            return rowsAffected > 0;
+        }
+
+        public bool IsUserOnline(string nickname)
+        {
+            using var conn = new SqliteConnection(_connectionString);
+            conn.Open();
+            var command = conn.CreateCommand();
+            command.CommandText = "SELECT Online FROM Users WHERE Nickname = @nickname";
+            command.Parameters.AddWithValue("@nickname", nickname);
+            using var reader = command.ExecuteReader(CommandBehavior.SingleRow);
+            if (!reader.Read()) return false;
+            return reader.GetBoolean(0);
         }
 
         public List<string> GetAllUsers()

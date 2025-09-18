@@ -14,10 +14,18 @@ namespace Client
     public partial class ChatForm : Form
     {
         private readonly NetworkClient _networkClient;
-        public ChatForm(NetworkClient networkClient)
+        private readonly MessageStore _messageStore = new MessageStore();
+        public string Nickname { get; private set; }
+        private string _currentContact = string.Empty;
+        private string _currentGroup = string.Empty;
+        public ChatForm(NetworkClient networkClient, string Nickname)
         {
             _networkClient = networkClient;
             _networkClient.MessageReceived += OnMessageReceived;
+            this.Nickname = Nickname;
+
+            Text = $"Chat - {Nickname}";
+ 
 
             InitializeComponent();
         }
@@ -44,8 +52,25 @@ namespace Client
                 case Mensagens.Server.Commands.CONTACTS_LIST:
                     foreach (string contactName in args[0].Split(','))
                     {
+                        if (contactName == Nickname) continue;
                         AddContactGroupBox(contactName);
+                        _networkClient.SendMessageAsync(Mensagens.Client.Contacts.Status(contactName)).Wait();
                     }
+                    break;
+                case Mensagens.Server.Commands.CONTACT_CREATED:
+                    AddContactGroupBox(args[0]);
+                    break;
+                case Mensagens.Server.Commands.CONTACT_ONLINE:
+                    ChangeContactStatus(args[0], true);
+                    break;
+                case Mensagens.Server.Commands.CONTACT_OFFLINE:
+                    ChangeContactStatus(args[0], false);
+                    break;
+                case Mensagens.Server.Commands.CHAT_PRIVATE_MESSAGE:
+                    ReceivePrivateMessage(args[0],args[0], args[1]);
+                    break;
+                case Mensagens.Server.Commands.CHAT_GROUP_MESSAGE:
+                    ReceiveGroupMessage(args[0], args[1], args[2]);
                     break;
                 case Mensagens.Server.Commands.CHAT_PRIVATE_MESSAGE_LIST:
                     foreach (string m in args[0].Split(','))
@@ -69,6 +94,32 @@ namespace Client
             switch (commandClient)
             {
 
+            }
+        }
+
+        private void AddMessageOnScreen(string sender, string message)
+        {
+            Invoke(new Action(() =>
+            {
+                ChatRichTextBox.AppendText($"[{sender}]:\t{message}{Environment.NewLine}");
+            }));
+        }
+        private void ReceivePrivateMessage(string contact,string sender, string message)
+        {
+            _messageStore.AddPrivateMessage(contact,sender, message);
+            if (sender != Nickname) ChangeContactLastMessage(contact, message);
+            if (_currentContact == contact)
+            {
+                AddMessageOnScreen(sender, message);
+            }
+        }
+
+        private void ReceiveGroupMessage(string group, string sender, string message)
+        {
+            _messageStore.AddGroupMessage(group, sender, message);
+            if(_currentGroup == group)
+            {
+                AddMessageOnScreen(sender,message);
             }
         }
 
@@ -107,7 +158,7 @@ namespace Client
                     MaximumSize = new Size(220, 20),
                     Size = new Size(216, 20),
                     TabIndex = 0,
-                    Text = "temp",
+                    Text = "",
                 };
                 label_last_message.Click += label_groupBox_MouseClick;
                 contactGroupBox.Controls.Add(label_last_message);
@@ -116,27 +167,68 @@ namespace Client
             }));
         }
 
-        private void button2_Click_1(object sender, EventArgs e)
+        private void ChangeContactStatus(string name, bool online)
         {
-            AddContactGroupBox("teste");
+            Invoke(new Action(() =>
+            {
+                var label = ContactsflowLayoutPanel.Controls.Find($"Status_{name}", true).FirstOrDefault() as Label;
+                if (label != null)
+                {
+                    label.Text = online ? "Online" : "Offline";
+                    label.ForeColor = online ? Color.Green : Color.Red;
+                }
+            }));
+        }
+
+        private void ChangeContactLastMessage(string contact, string message)
+        {
+            Invoke(new Action(() =>
+            {
+                var label = ContactsflowLayoutPanel.Controls.Find($"lastMessage_{contact}", true).FirstOrDefault() as Label;
+                if (label != null)
+                {
+                    label.Text = message;
+                }
+            }));
+        }
+
+        private void sendButton_Click(object sender, EventArgs e)
+        {
+            _networkClient.SendMessageAsync(Mensagens.Client.Chat.Private.SendMessage(_currentContact, messageTextBox.Text)).Wait();
+            ReceivePrivateMessage(_currentContact, Nickname, messageTextBox.Text);
+            messageTextBox.Clear(); 
         }
 
         private void groupBox_MouseClick(object sender, EventArgs e)
         {
             var gb = (GroupBox)sender;
             LoadMessagesOnScreen(gb.Text);
+            _currentContact = gb.Text;
         }
 
         private void label_groupBox_MouseClick(object sender, EventArgs e)
         {
             var label = (Label)sender;
             LoadMessagesOnScreen(label.Parent?.Text);
+            _currentContact = label.Parent?.Text ?? string.Empty;
         }
-        
-        private async void LoadMessagesOnScreen(string contact)
+
+        private void LoadMessagesOnScreen(string contact)
         {
             ChatRichTextBox.Clear();
-            await _networkClient.SendMessageAsync(Mensagens.Client.Chat.Private.ListMessages(contact));
+            foreach (var message in _messageStore.GetContactMessages(contact))
+            {
+                AddMessageOnScreen(message.Sender, message.Content);
+            }
+        }
+
+        private void messageTextBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                sendButton.PerformClick();
+                e.SuppressKeyPress = true;
+            }
         }
     }
 }
