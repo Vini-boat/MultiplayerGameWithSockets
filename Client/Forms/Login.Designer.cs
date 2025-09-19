@@ -55,7 +55,7 @@
             ipTextBox.Location = new Point(84, 12);
             ipTextBox.Name = "ipTextBox";
             ipTextBox.Size = new Size(100, 23);
-            ipTextBox.TabIndex = 23;
+            ipTextBox.TabIndex = 2;
             ipTextBox.Text = "127.0.0.1";
             // 
             // label3
@@ -72,7 +72,7 @@
             portTextBox.Location = new Point(84, 41);
             portTextBox.Name = "portTextBox";
             portTextBox.Size = new Size(100, 23);
-            portTextBox.TabIndex = 21;
+            portTextBox.TabIndex = 3;
             portTextBox.Text = "8888";
             // 
             // connectButton
@@ -80,7 +80,7 @@
             connectButton.Location = new Point(40, 70);
             connectButton.Name = "connectButton";
             connectButton.Size = new Size(144, 23);
-            connectButton.TabIndex = 20;
+            connectButton.TabIndex = 1;
             connectButton.Text = "Conectar";
             connectButton.UseVisualStyleBackColor = true;
             connectButton.Click += connectButton_Click;
@@ -101,7 +101,7 @@
             nicknameTextBox.Location = new Point(84, 99);
             nicknameTextBox.Name = "nicknameTextBox";
             nicknameTextBox.Size = new Size(100, 23);
-            nicknameTextBox.TabIndex = 18;
+            nicknameTextBox.TabIndex = 4;
             // 
             // label1
             // 
@@ -120,7 +120,7 @@
             passwordTextBox.Name = "passwordTextBox";
             passwordTextBox.PasswordChar = '*';
             passwordTextBox.Size = new Size(100, 23);
-            passwordTextBox.TabIndex = 25;
+            passwordTextBox.TabIndex = 5;
             // 
             // createNewAccountButton
             // 
@@ -128,7 +128,7 @@
             createNewAccountButton.Location = new Point(40, 186);
             createNewAccountButton.Name = "createNewAccountButton";
             createNewAccountButton.Size = new Size(144, 23);
-            createNewAccountButton.TabIndex = 27;
+            createNewAccountButton.TabIndex = 7;
             createNewAccountButton.Text = "Criar nova conta";
             createNewAccountButton.UseVisualStyleBackColor = true;
             createNewAccountButton.Click += createNewAccountButton_Click;
@@ -139,7 +139,7 @@
             loginButton.Location = new Point(40, 157);
             loginButton.Name = "loginButton";
             loginButton.Size = new Size(144, 23);
-            loginButton.TabIndex = 28;
+            loginButton.TabIndex = 6;
             loginButton.Text = "Login";
             loginButton.UseVisualStyleBackColor = true;
             loginButton.Click += loginButton_Click;

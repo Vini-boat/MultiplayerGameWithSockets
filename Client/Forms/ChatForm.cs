@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Client.Forms;
+using Protocolo;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -8,7 +10,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Protocolo;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace Client
 {
@@ -20,6 +22,7 @@ namespace Client
         private string _currentContact = string.Empty;
         private string _currentGroup = string.Empty;
         private System.Windows.Forms.Timer _typingTimer;
+        private List<string> contacts = new List<string>();
         public ChatForm(NetworkClient networkClient, string Nickname)
         {
             _networkClient = networkClient;
@@ -27,7 +30,7 @@ namespace Client
             this.Nickname = Nickname;
 
             _typingTimer = new System.Windows.Forms.Timer();
-            _typingTimer.Interval = 1000; // 1 second
+            _typingTimer.Interval = 1000;
             _typingTimer.Tick += TypingTimer_Tick;
 
             Text = $"Chat - {Nickname}";
@@ -118,27 +121,28 @@ namespace Client
                 ChatRichTextBox.ScrollToCaret();
             }));
         }
-        private void ReceivePrivateMessage(string contact,string sender, string message)
+        private void ReceivePrivateMessage(string contact, string sender, string message)
         {
-            _messageStore.AddPrivateMessage(contact,sender, message);
+            _messageStore.AddPrivateMessage(contact, sender, message);
             if (sender != Nickname) ChangeContactLastMessage(contact, message);
             if (_currentContact == contact)
             {
-                AddMessageOnScreen(sender, message,DateTime.Now);
+                AddMessageOnScreen(sender, message, DateTime.Now);
             }
         }
 
         private void ReceiveGroupMessage(string group, string sender, string message)
         {
             _messageStore.AddGroupMessage(group, sender, message);
-            if(_currentGroup == group)
+            if (_currentGroup == group)
             {
-                AddMessageOnScreen(sender,message,DateTime.Now);
+                AddMessageOnScreen(sender, message, DateTime.Now);
             }
         }
 
         private void AddContactGroupBox(string name)
         {
+            contacts.Add(name);
             Invoke(new Action(() =>
             {
 
@@ -222,7 +226,7 @@ namespace Client
         {
             _networkClient.SendMessageAsync(Mensagens.Client.Chat.Private.SendMessage(_currentContact, messageTextBox.Text)).Wait();
             ReceivePrivateMessage(_currentContact, Nickname, messageTextBox.Text);
-            messageTextBox.Clear(); 
+            messageTextBox.Clear();
         }
 
         private void groupBox_MouseClick(object sender, EventArgs e)
@@ -240,7 +244,11 @@ namespace Client
 
         private void ChangeCurrentContact(string contact)
         {
-            ContactsflowLayoutPanel.Controls.OfType<GroupBox>().ToList().ForEach(gb => gb.BackColor = Color.Transparent);
+            ContactsflowLayoutPanel.Controls.OfType<GroupBox>().ToList().ForEach(gb =>
+            {
+                gb.BackColor = Color.Transparent;
+                gb.Controls.OfType<Label>().ToList().ForEach(gb => gb.BackColor = Color.Transparent);
+            });
             ChatRichTextBox.Enabled = true;
             messageTextBox.Enabled = true;
             sendButton.Enabled = true;
@@ -250,6 +258,7 @@ namespace Client
             var groupBoxNova = ContactsflowLayoutPanel.Controls.Find($"Contact_{contact}", true).FirstOrDefault() as GroupBox;
             if (groupBoxNova == null) return;
             groupBoxNova.BackColor = Color.LightGray;
+            groupBoxNova.Controls.OfType<Label>().ToList().ForEach(gb => gb.BackColor = Color.LightGray);
         }
 
         private void LoadMessagesOnScreen(string contact)
@@ -264,7 +273,10 @@ namespace Client
 
         private void TypingTimer_Tick(object sender, EventArgs e)
         {
-            _networkClient.SendMessageAsync(Mensagens.Client.Chat.Private.Typing.Stop(_currentContact)).Wait();
+            if (_typingTimer.Enabled)
+            {
+                _networkClient.SendMessageAsync(Mensagens.Client.Chat.Private.Typing.Stop(_currentContact)).Wait();
+            }
             _typingTimer.Stop();
         }
         private void messageTextBox_KeyDown(object sender, KeyEventArgs e)
@@ -282,6 +294,30 @@ namespace Client
                 }
                 _typingTimer.Stop();
                 _typingTimer.Start();
+            }
+        }
+
+        private void messageTextBox_TextChanged(object sender, EventArgs e)
+        {
+            if (messageTextBox.Text.Contains(";"))
+            {
+                int pos = messageTextBox.SelectionStart;
+                messageTextBox.Text = messageTextBox.Text.Replace(";", "");
+                messageTextBox.SelectionStart = pos;
+            }
+        }
+
+        private void NewGroupButton_Click(object sender, EventArgs e)
+        {
+            using (var form = new NewGroupForm(contacts))
+            {
+                if (form.ShowDialog() == DialogResult.OK)
+                {
+                    var groupName = form.GroupName;
+                    var members = form.SelectedContacts;
+                    MessageBox.Show($"Group '{groupName}' with members: {string.Join(", ", members)}");
+                    //_networkClient.SendMessageAsync(Mensagens.Client.Group.Create(groupName)).Wait();
+                }
             }
         }
     }

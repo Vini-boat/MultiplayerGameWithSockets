@@ -37,7 +37,7 @@
             groupBox2 = new GroupBox();
             label2 = new Label();
             flowLayoutPanel2 = new FlowLayoutPanel();
-            button1 = new Button();
+            NewGroupButton = new Button();
             Configurações = new TabPage();
             flowLayoutPanel4 = new FlowLayoutPanel();
             button3 = new Button();
@@ -155,22 +155,23 @@
             // flowLayoutPanel2
             // 
             flowLayoutPanel2.AutoSize = true;
-            flowLayoutPanel2.Controls.Add(button1);
+            flowLayoutPanel2.Controls.Add(NewGroupButton);
             flowLayoutPanel2.Dock = DockStyle.Top;
             flowLayoutPanel2.Location = new Point(3, 3);
             flowLayoutPanel2.Name = "flowLayoutPanel2";
             flowLayoutPanel2.Size = new Size(252, 31);
             flowLayoutPanel2.TabIndex = 0;
             // 
-            // button1
+            // NewGroupButton
             // 
-            button1.AutoSize = true;
-            button1.Location = new Point(3, 3);
-            button1.Name = "button1";
-            button1.Size = new Size(81, 25);
-            button1.TabIndex = 0;
-            button1.Text = "Novo grupo";
-            button1.UseVisualStyleBackColor = true;
+            NewGroupButton.AutoSize = true;
+            NewGroupButton.Location = new Point(3, 3);
+            NewGroupButton.Name = "NewGroupButton";
+            NewGroupButton.Size = new Size(81, 25);
+            NewGroupButton.TabIndex = 0;
+            NewGroupButton.Text = "Novo grupo";
+            NewGroupButton.UseVisualStyleBackColor = true;
+            NewGroupButton.Click += NewGroupButton_Click;
             // 
             // Configurações
             // 
@@ -206,8 +207,8 @@
             // sendButton
             // 
             sendButton.AutoSize = true;
-            sendButton.Enabled = false;
             sendButton.AutoSizeMode = AutoSizeMode.GrowAndShrink;
+            sendButton.Enabled = false;
             sendButton.Location = new Point(469, 413);
             sendButton.Name = "sendButton";
             sendButton.Size = new Size(49, 25);
@@ -218,22 +219,23 @@
             // 
             // messageTextBox
             // 
+            messageTextBox.Enabled = false;
             messageTextBox.Location = new Point(3, 415);
             messageTextBox.Name = "messageTextBox";
             messageTextBox.Size = new Size(460, 23);
             messageTextBox.TabIndex = 1;
+            messageTextBox.TextChanged += messageTextBox_TextChanged;
             messageTextBox.KeyDown += messageTextBox_KeyDown;
-            messageTextBox.Enabled = false;
             // 
             // ChatRichTextBox
             // 
+            ChatRichTextBox.Enabled = false;
             ChatRichTextBox.Location = new Point(3, 3);
             ChatRichTextBox.Name = "ChatRichTextBox";
+            ChatRichTextBox.ReadOnly = true;
             ChatRichTextBox.Size = new Size(524, 406);
             ChatRichTextBox.TabIndex = 0;
             ChatRichTextBox.Text = "\n\n\n\n\n\n\n\t\tSelecione um contato ou Grupo para mandar mensagem";
-            ChatRichTextBox.Enabled = false;
-            ChatRichTextBox.ReadOnly = true;
             // 
             // ChatForm
             // 
@@ -271,7 +273,7 @@
         private FlowLayoutPanel ContactsflowLayoutPanel;
         private TabPage Grupos;
         private FlowLayoutPanel flowLayoutPanel2;
-        private Button button1;
+        private Button NewGroupButton;
         private RichTextBox ChatRichTextBox;
         private FlowLayoutPanel flowLayoutPanel3;
         private TabPage Configurações;
