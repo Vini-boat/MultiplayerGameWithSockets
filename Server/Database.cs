@@ -51,9 +51,10 @@ namespace Server
                         )
                     ";
                 command.ExecuteNonQuery();
-
-
+                command.CommandText = "UPDATE Users SET Online = FALSE";
+                command.ExecuteNonQuery();
             }
+
         }
 
         public bool AddUser(string nickname, string password)

@@ -206,6 +206,7 @@
             // sendButton
             // 
             sendButton.AutoSize = true;
+            sendButton.Enabled = false;
             sendButton.AutoSizeMode = AutoSizeMode.GrowAndShrink;
             sendButton.Location = new Point(469, 413);
             sendButton.Name = "sendButton";
@@ -222,6 +223,7 @@
             messageTextBox.Size = new Size(460, 23);
             messageTextBox.TabIndex = 1;
             messageTextBox.KeyDown += messageTextBox_KeyDown;
+            messageTextBox.Enabled = false;
             // 
             // ChatRichTextBox
             // 
@@ -229,7 +231,9 @@
             ChatRichTextBox.Name = "ChatRichTextBox";
             ChatRichTextBox.Size = new Size(524, 406);
             ChatRichTextBox.TabIndex = 0;
-            ChatRichTextBox.Text = "";
+            ChatRichTextBox.Text = "\n\n\n\n\n\n\n\t\tSelecione um contato ou Grupo para mandar mensagem";
+            ChatRichTextBox.Enabled = false;
+            ChatRichTextBox.ReadOnly = true;
             // 
             // ChatForm
             // 

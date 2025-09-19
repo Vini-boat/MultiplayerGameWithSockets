@@ -178,8 +178,8 @@
                     
                     public static class Typing
                     {
-                        public static string Start(string group, string user) => $"{Commands.CHAT_PRIVATE_TYPING_START}{DELIM}{group}{DELIM}{user}";
-                        public static string Stop(string group, string user) => $"{Commands.CHAT_PRIVATE_TYPING_STOP}{DELIM}{group}{DELIM}{user}";
+                        public static string Start(string contact) => $"{Commands.CHAT_PRIVATE_TYPING_START}{DELIM}{contact}";
+                        public static string Stop(string contact) => $"{Commands.CHAT_PRIVATE_TYPING_STOP}{DELIM}{contact}";
                     }
 
                 }

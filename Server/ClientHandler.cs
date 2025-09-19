@@ -58,10 +58,10 @@ public class ClientHandler
                         if (err != null) { await SendMessageAsync(Mensagens.Server.User.Login.Error(err)); break; }
                         Nickname = args[0];
                         await SendMessageAsync(Mensagens.Server.User.Login.Ok());
-                        await _server.BroadcastMessageAsync(ClientId,Mensagens.Server.Contacts.Online(args[0]));
+                        await _server.BroadcastMessageAsync(ClientId, Mensagens.Server.Contacts.Online(args[0]));
                         break;
                     case Mensagens.Client.Commands.USER_LOGOUT:
-                        if (Nickname == null) { await SendMessageAsync(Mensagens.Server.User.Logout.Error("Usuário não está logado")); break; }
+                        if (Nickname == null) { await SendMessageAsync(Mensagens.Server.User.Logout.Error("Usuï¿½rio nï¿½o estï¿½ logado")); break; }
                         err = _userservice.Logout(Nickname);
                         if (err != null) { await SendMessageAsync(Mensagens.Server.User.Logout.Error(err)); break; }
                         run = false;
@@ -72,13 +72,13 @@ public class ClientHandler
                         if (err != null) { await SendMessageAsync(Mensagens.Server.User.Create.Error(err)); break; }
 
                         await SendMessageAsync(Mensagens.Server.User.Create.Ok());
-                        await _server.BroadcastMessageAsync(ClientId,Mensagens.Server.Contacts.Created(args[0]));
-                        
+                        await _server.BroadcastMessageAsync(ClientId, Mensagens.Server.Contacts.Created(args[0]));
+
                         break;
                     case Mensagens.Client.Commands.USER_DELETE:
                         err = _userservice.DeleteUser(args[0], args[1]);
                         if (err != null) { await SendMessageAsync(Mensagens.Server.User.Delete.Error(err)); }
-                                    else { await SendMessageAsync(Mensagens.Server.User.Delete.Ok()); }
+                        else { await SendMessageAsync(Mensagens.Server.User.Delete.Ok()); }
                         break;
                     case Mensagens.Client.Commands.LIST_CONTACTS:
                         List<string> contacts = _userservice.GetAllUsers();
@@ -98,6 +98,14 @@ public class ClientHandler
                     case Mensagens.Client.Commands.CHAT_PRIVATE_MESSAGE:
                         if (Nickname == null) break;
                         await _server.SendMessageToAsync(args[0], Mensagens.Server.Chat.Private.SendMessage(Nickname, args[1]));
+                        break;
+                    case Mensagens.Client.Commands.CHAT_PRIVATE_TYPING_START:
+                        if (Nickname == null) break;
+                        await _server.SendMessageToAsync(args[0], Mensagens.Server.Chat.Private.Typing.Start(Nickname));
+                        break;
+                    case Mensagens.Client.Commands.CHAT_PRIVATE_TYPING_STOP:
+                        if (Nickname == null) break;
+                        await _server.SendMessageToAsync(args[0], Mensagens.Server.Chat.Private.Typing.Stop(Nickname));
                         break;
                 }
             }
