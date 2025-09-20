@@ -4,6 +4,7 @@ using System.Text;
 using Protocolo;
 using Server.Services;
 using Server;
+using System.Security.AccessControl;
 
 
 public class ClientHandler
@@ -15,6 +16,7 @@ public class ClientHandler
     private readonly StreamWriter? _writer;
 
     private readonly UserService _userservice;
+    private readonly GroupService _groupService;
 
     public string ClientId { get; }
     public string Nickname { get; private set; } = string.Empty;
@@ -31,6 +33,7 @@ public class ClientHandler
         _writer = new StreamWriter(stream,utf8WithoutBom) { AutoFlush = true };
 
         _userservice = new UserService(database);
+        _groupService = new GroupService(database);
     }
 
     public async Task HandleClientAsync()
@@ -106,6 +109,37 @@ public class ClientHandler
                     case Mensagens.Client.Commands.CHAT_PRIVATE_TYPING_STOP:
                         if (Nickname == null) break;
                         await _server.SendMessageToAsync(args[0], Mensagens.Server.Chat.Private.Typing.Stop(Nickname));
+                        break;
+                    case Mensagens.Client.Commands.GROUP_CREATE:
+                        err = _groupService.CreateGroup(args[0]);
+                        if (err != null) { await SendMessageAsync(Mensagens.Server.Group.Create.Error(err)); break; }
+                        if (Nickname == null) { await SendMessageAsync(Mensagens.Server.Group.Create.Error("Usuário não está logado")); break; }
+                        _groupService.AddUserToGroup(args[0], Nickname);
+                        await SendMessageAsync(Mensagens.Server.Group.Create.Ok());
+                        await SendMessageAsync(Mensagens.Server.Group.Created(args[0]));
+                        break;
+                    case Mensagens.Client.Commands.GROUP_ADD_USER:
+                        err = _groupService.AddUserToGroup(args[0], args[1]);
+                        if (err != null) { await SendMessageAsync(Mensagens.Server.Group.AddUser.Error(err)); break; }
+                        await SendMessageAsync(Mensagens.Server.Group.AddUser.Ok());
+                        await _server.SendMessageToAsync(args[1], Mensagens.Server.Group.Created(args[0]));
+                        break;
+                    case Mensagens.Client.Commands.LIST_GROUPS:
+                        List<string> groups = _groupService.GetUserGroups(args[0]);
+                        await SendMessageAsync(Mensagens.Server.Group.List(groups));
+                        break;
+                    case Mensagens.Client.Commands.GROUP_LIST_USERS:
+                        List<string> users = _groupService.GetGroupUsers(args[0]);
+                        await SendMessageAsync(Mensagens.Server.Group.Users(args[0], users));
+                        break;
+                    case Mensagens.Client.Commands.CHAT_GROUP_MESSAGE:
+                        if (Nickname == null) break;
+                        List<string> groupUsers = _groupService.GetGroupUsers(args[0]);
+                        foreach (string user in groupUsers)
+                        {
+                            if (user == Nickname) continue;
+                            await _server.SendMessageToAsync(user, Mensagens.Server.Chat.Group.SendMessage(args[0], Nickname, args[1]));
+                        }
                         break;
                 }
             }

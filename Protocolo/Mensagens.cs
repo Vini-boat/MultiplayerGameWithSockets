@@ -21,7 +21,9 @@
                 GROUP_DELETE,
                 GROUP_ADD_USER,
                 GROUP_REMOVE_USER,
-                
+
+                GROUP_LIST_USERS,
+
                 CHAT_PRIVATE_MESSAGE,
                 CHAT_PRIVATE_LIST_MESSAGES,
                 CHAT_GROUP_MESSAGE,
@@ -54,7 +56,7 @@
 
             public static class Groups
             {
-                public static string ListAll() => $"{Commands.LIST_GROUPS}";
+                public static string ListForUser(string userName) => $"{Commands.LIST_GROUPS}{DELIM}{userName}";
                 public static string Create(string groupName) => $"{Commands.GROUP_CREATE}{DELIM}{groupName}";
                 public static string Delete(string groupName) => $"{Commands.GROUP_DELETE}{DELIM}{groupName}";
                 public static string AddUser(string groupName, string contact) => $"{Commands.GROUP_ADD_USER}{DELIM}{groupName}{DELIM}{contact}";
@@ -104,6 +106,7 @@
                 CONTACT_OFFLINE,
 
                 GROUP_LIST,
+                GROUP_USERS_LIST,
                 GROUP_CREATED,
                 GROUP_DELETED,
 
@@ -164,8 +167,27 @@
             public static class Group
             {
                 public static string List(List<string> groups) => $"{Commands.GROUP_LIST}{DELIM}{string.Join(",", groups)}";
+                public static string Users(string groupName, List<string> users) => $"{Commands.GROUP_USERS_LIST}{DELIM}{groupName}{DELIM}{string.Join(",", users)}";
                 public static string Created(string groupName) => $"{Commands.GROUP_CREATED}{DELIM}{groupName}";
                 public static string Deleted(string groupName) => $"{Commands.GROUP_DELETED}{DELIM}{groupName}";
+
+                public static class Create
+                {
+                    public static string Ok() => $"{Commands.OK}{DELIM}{Client.Commands.GROUP_CREATE}";
+                    public static string Error(string error) => $"{Commands.ERROR}{DELIM}{Client.Commands.GROUP_CREATE}{DELIM}{error}";
+                }
+
+                public static class Delete
+                {
+                    public static string Ok() => $"{Commands.OK}{DELIM}{Client.Commands.GROUP_DELETE}";
+                    public static string Error(string error) => $"{Commands.ERROR}{DELIM}{Client.Commands.GROUP_DELETE}{DELIM}{error}";
+                }
+
+                public static class AddUser
+                {
+                    public static string Ok() => $"{Commands.OK}{DELIM}{Client.Commands.GROUP_ADD_USER}";
+                    public static string Error(string error) => $"{Commands.ERROR}{DELIM}{Client.Commands.GROUP_ADD_USER}{DELIM}{error}";
+                }
 
             }
 

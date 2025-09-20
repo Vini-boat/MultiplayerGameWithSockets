@@ -21,6 +21,9 @@ namespace Client
         public string Nickname { get; private set; }
         private string _currentContact = string.Empty;
         private string _currentGroup = string.Empty;
+
+        private bool _isOnGroupScreen = false;
+
         private System.Windows.Forms.Timer _typingTimer;
         private List<string> contacts = new List<string>();
         public ChatForm(NetworkClient networkClient, string Nickname)
@@ -42,6 +45,7 @@ namespace Client
         private async void ChatForm_Load(object sender, EventArgs e)
         {
             await _networkClient.SendMessageAsync(Mensagens.Client.Contacts.ListAll());
+            await _networkClient.SendMessageAsync(Mensagens.Client.Groups.ListForUser(Nickname));
         }
 
         private void OnMessageReceived(string message)
@@ -93,6 +97,17 @@ namespace Client
                 case Mensagens.Server.Commands.CHAT_PRIVATE_TYPING_STOP:
                     ChangeContactTyping(args[0], false);
                     break;
+                case Mensagens.Server.Commands.GROUP_LIST:
+                    foreach (string groupName in args[0].Split(','))
+                    {
+                        if (string.IsNullOrWhiteSpace(groupName)) continue;
+                        AddGroupGroupBox(groupName);
+                    }
+                    break;
+                case Mensagens.Server.Commands.GROUP_CREATED:
+                    AddGroupGroupBox(args[0]);
+                    break;
+
             }
         }
 
@@ -186,6 +201,36 @@ namespace Client
             }));
         }
 
+        private void AddGroupGroupBox(string name)
+        {
+            Invoke(new Action(() =>
+            {
+                GroupBox GroupGroupBox = new GroupBox();
+                GroupGroupBox.Name = $"Group_{name}";
+                GroupGroupBox.Location = new Point(3, 3);
+                GroupGroupBox.Size = new Size(228, 47);
+                GroupGroupBox.TabIndex = 0;
+                GroupGroupBox.TabStop = false;
+                GroupGroupBox.Text = name;
+
+                var label_last_message = new Label()
+                {
+                    Name = $"lastMessage_group_{name}",
+                    AutoEllipsis = true,
+                    AutoSize = true,
+                    Location = new Point(6, 19),
+                    MaximumSize = new Size(220, 20),
+                    Size = new Size(216, 20),
+                    TabIndex = 0,
+                    Text = "",
+                };
+                //label_last_message.Click += label_groupBox_MouseClick;
+                GroupGroupBox.Controls.Add(label_last_message);
+                //GroupGroupBox.MouseClick += groupBox_MouseClick;
+                GroupsflowLayoutPanel.Controls.Add(GroupGroupBox);
+            }));
+        }
+
         private void ChangeContactStatus(string name, bool online)
         {
             Invoke(new Action(() =>
@@ -224,8 +269,15 @@ namespace Client
 
         private void sendButton_Click(object sender, EventArgs e)
         {
-            _networkClient.SendMessageAsync(Mensagens.Client.Chat.Private.SendMessage(_currentContact, messageTextBox.Text)).Wait();
-            ReceivePrivateMessage(_currentContact, Nickname, messageTextBox.Text);
+            if (_isOnGroupScreen)
+            {
+
+            }
+            else
+            {
+                _networkClient.SendMessageAsync(Mensagens.Client.Chat.Private.SendMessage(_currentContact, messageTextBox.Text)).Wait();
+                ReceivePrivateMessage(_currentContact, Nickname, messageTextBox.Text);
+            }
             messageTextBox.Clear();
         }
 
@@ -309,16 +361,19 @@ namespace Client
 
         private void NewGroupButton_Click(object sender, EventArgs e)
         {
-            using (var form = new NewGroupForm(contacts))
+            using (var form = new NewGroupForm(_networkClient, contacts))
             {
                 if (form.ShowDialog() == DialogResult.OK)
                 {
-                    var groupName = form.GroupName;
-                    var members = form.SelectedContacts;
-                    MessageBox.Show($"Group '{groupName}' with members: {string.Join(", ", members)}");
-                    //_networkClient.SendMessageAsync(Mensagens.Client.Group.Create(groupName)).Wait();
+
                 }
             }
+        }
+
+        private void tabControl1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (tabControl1.SelectedIndex == 0) _isOnGroupScreen = false;
+            if (tabControl1.SelectedIndex == 1) _isOnGroupScreen = true;
         }
     }
 }

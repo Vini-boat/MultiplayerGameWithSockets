@@ -33,7 +33,7 @@
             Contatos = new TabPage();
             ContactsflowLayoutPanel = new FlowLayoutPanel();
             Grupos = new TabPage();
-            flowLayoutPanel3 = new FlowLayoutPanel();
+            GroupsflowLayoutPanel = new FlowLayoutPanel();
             groupBox2 = new GroupBox();
             label2 = new Label();
             flowLayoutPanel2 = new FlowLayoutPanel();
@@ -51,7 +51,7 @@
             tabControl1.SuspendLayout();
             Contatos.SuspendLayout();
             Grupos.SuspendLayout();
-            flowLayoutPanel3.SuspendLayout();
+            GroupsflowLayoutPanel.SuspendLayout();
             groupBox2.SuspendLayout();
             flowLayoutPanel2.SuspendLayout();
             Configurações.SuspendLayout();
@@ -88,6 +88,7 @@
             tabControl1.SelectedIndex = 0;
             tabControl1.Size = new Size(266, 450);
             tabControl1.TabIndex = 0;
+            tabControl1.SelectedIndexChanged += tabControl1_SelectedIndexChanged;
             // 
             // Contatos
             // 
@@ -111,7 +112,7 @@
             // 
             // Grupos
             // 
-            Grupos.Controls.Add(flowLayoutPanel3);
+            Grupos.Controls.Add(GroupsflowLayoutPanel);
             Grupos.Controls.Add(flowLayoutPanel2);
             Grupos.Location = new Point(4, 24);
             Grupos.Name = "Grupos";
@@ -121,15 +122,15 @@
             Grupos.Text = "Grupos";
             Grupos.UseVisualStyleBackColor = true;
             // 
-            // flowLayoutPanel3
+            // GroupsflowLayoutPanel
             // 
-            flowLayoutPanel3.AutoScroll = true;
-            flowLayoutPanel3.Controls.Add(groupBox2);
-            flowLayoutPanel3.Dock = DockStyle.Bottom;
-            flowLayoutPanel3.Location = new Point(3, 37);
-            flowLayoutPanel3.Name = "flowLayoutPanel3";
-            flowLayoutPanel3.Size = new Size(252, 382);
-            flowLayoutPanel3.TabIndex = 1;
+            GroupsflowLayoutPanel.AutoScroll = true;
+            GroupsflowLayoutPanel.Controls.Add(groupBox2);
+            GroupsflowLayoutPanel.Dock = DockStyle.Bottom;
+            GroupsflowLayoutPanel.Location = new Point(3, 37);
+            GroupsflowLayoutPanel.Name = "GroupsflowLayoutPanel";
+            GroupsflowLayoutPanel.Size = new Size(252, 382);
+            GroupsflowLayoutPanel.TabIndex = 1;
             // 
             // groupBox2
             // 
@@ -254,7 +255,7 @@
             Contatos.ResumeLayout(false);
             Grupos.ResumeLayout(false);
             Grupos.PerformLayout();
-            flowLayoutPanel3.ResumeLayout(false);
+            GroupsflowLayoutPanel.ResumeLayout(false);
             groupBox2.ResumeLayout(false);
             groupBox2.PerformLayout();
             flowLayoutPanel2.ResumeLayout(false);
@@ -275,7 +276,7 @@
         private FlowLayoutPanel flowLayoutPanel2;
         private Button NewGroupButton;
         private RichTextBox ChatRichTextBox;
-        private FlowLayoutPanel flowLayoutPanel3;
+        private FlowLayoutPanel GroupsflowLayoutPanel;
         private TabPage Configurações;
         private Button sendButton;
         private TextBox messageTextBox;
