@@ -57,6 +57,7 @@
             public static class Groups
             {
                 public static string ListForUser(string userName) => $"{Commands.LIST_GROUPS}{DELIM}{userName}";
+                public static string ListUsersIn(string groupName) => $"{Commands.GROUP_LIST_USERS}{DELIM}{groupName}";
                 public static string Create(string groupName) => $"{Commands.GROUP_CREATE}{DELIM}{groupName}";
                 public static string Delete(string groupName) => $"{Commands.GROUP_DELETE}{DELIM}{groupName}";
                 public static string AddUser(string groupName, string contact) => $"{Commands.GROUP_ADD_USER}{DELIM}{groupName}{DELIM}{contact}";

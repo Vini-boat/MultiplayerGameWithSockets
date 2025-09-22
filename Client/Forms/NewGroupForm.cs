@@ -28,7 +28,11 @@ namespace Client.Forms
 
         private void AcceptButton_Click(object sender, EventArgs e) 
         { 
-            
+            if (string.IsNullOrWhiteSpace(GroupName))
+            {
+                MessageBox.Show("O nome do grupo não pode estar vazio.", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
             _networkClient.SendMessageAsync(Mensagens.Client.Groups.Create(GroupName)).Wait();
         }
         private void CancelButton_Click(object sender, EventArgs e) 

@@ -22,7 +22,7 @@ namespace Client
         private string _currentContact = string.Empty;
         private string _currentGroup = string.Empty;
 
-        private bool _isOnGroupScreen = false;
+        private bool IsOnGroupScreen => tabControl1.SelectedIndex == 1;
 
         private System.Windows.Forms.Timer _typingTimer;
         private List<string> contacts = new List<string>();
@@ -102,10 +102,15 @@ namespace Client
                     {
                         if (string.IsNullOrWhiteSpace(groupName)) continue;
                         AddGroupGroupBox(groupName);
+                        _networkClient.SendMessageAsync(Mensagens.Client.Groups.ListUsersIn(groupName)).Wait();
                     }
                     break;
                 case Mensagens.Server.Commands.GROUP_CREATED:
                     AddGroupGroupBox(args[0]);
+                    _networkClient.SendMessageAsync(Mensagens.Client.Groups.ListUsersIn(args[0])).Wait();
+                    break;
+                case Mensagens.Server.Commands.GROUP_USERS_LIST:
+                    ChangeGroupUsersList(args[0], args[1].Split(',').ToList());
                     break;
 
             }
@@ -149,6 +154,7 @@ namespace Client
         private void ReceiveGroupMessage(string group, string sender, string message)
         {
             _messageStore.AddGroupMessage(group, sender, message);
+            if (sender != Nickname) ChangeGroupLastMessage(group, sender, message);
             if (_currentGroup == group)
             {
                 AddMessageOnScreen(sender, message, DateTime.Now);
@@ -179,7 +185,7 @@ namespace Client
                     TabIndex = 1,
                     Text = "Offline"
                 };
-                label_status.Click += label_groupBox_MouseClick;
+                label_status.Click += ContactLabelGroupBox_MouseClick;
 
                 contactGroupBox.Controls.Add(label_status);
 
@@ -194,9 +200,9 @@ namespace Client
                     TabIndex = 0,
                     Text = "",
                 };
-                label_last_message.Click += label_groupBox_MouseClick;
+                label_last_message.Click += ContactLabelGroupBox_MouseClick;
                 contactGroupBox.Controls.Add(label_last_message);
-                contactGroupBox.MouseClick += groupBox_MouseClick;
+                contactGroupBox.MouseClick += ContactGroupBox_MouseClick;
                 ContactsflowLayoutPanel.Controls.Add(contactGroupBox);
             }));
         }
@@ -224,9 +230,9 @@ namespace Client
                     TabIndex = 0,
                     Text = "",
                 };
-                //label_last_message.Click += label_groupBox_MouseClick;
+                label_last_message.Click += GroupLabelGroupBox_MouseClick;
                 GroupGroupBox.Controls.Add(label_last_message);
-                //GroupGroupBox.MouseClick += groupBox_MouseClick;
+                GroupGroupBox.MouseClick += GroupGroupBox_MouseClick;
                 GroupsflowLayoutPanel.Controls.Add(GroupGroupBox);
             }));
         }
@@ -267,11 +273,34 @@ namespace Client
             }));
         }
 
+        private void ChangeGroupLastMessage(string group, string sender, string message)
+        {
+            Invoke(new Action(() =>
+            {
+                var label = GroupsflowLayoutPanel.Controls.Find($"lastMessage_group_{group}", true).FirstOrDefault() as Label;
+                if (label != null)
+                {
+                    label.Text = $"[{sender}]: {message}";
+                }
+            }));
+        }
+
+        private void ChangeGroupUsersList(string group, List<string> users)
+        {
+            Invoke(new Action(() =>
+            {
+                var gb = GroupsflowLayoutPanel.Controls.Find($"Group_{group}", true).FirstOrDefault() as GroupBox;
+                if (gb == null) return;
+                gb.Text = $"{group} - ({string.Join(", ", users)})";
+            }));
+        }
+
         private void sendButton_Click(object sender, EventArgs e)
         {
-            if (_isOnGroupScreen)
+            if (IsOnGroupScreen)
             {
-
+                _networkClient.SendMessageAsync(Mensagens.Client.Chat.Group.SendMessage(_currentGroup, messageTextBox.Text)).Wait();
+                ReceiveGroupMessage(_currentGroup, Nickname, messageTextBox.Text);
             }
             else
             {
@@ -281,17 +310,17 @@ namespace Client
             messageTextBox.Clear();
         }
 
-        private void groupBox_MouseClick(object sender, EventArgs e)
+        private void ContactGroupBox_MouseClick(object sender, EventArgs e)
         {
             var gb = (GroupBox)sender;
-            ChangeCurrentContact(gb.Text);
+            ChangeCurrentContact(gb.Name.Replace("Contact_", ""));
         }
 
-        private void label_groupBox_MouseClick(object sender, EventArgs e)
+        private void ContactLabelGroupBox_MouseClick(object sender, EventArgs e)
         {
             var label = (Label)sender;
             if (label.Parent == null) return;
-            ChangeCurrentContact(label.Parent.Text);
+            ChangeCurrentContact(label.Parent.Name.Replace("Contact_", ""));
         }
 
         private void ChangeCurrentContact(string contact)
@@ -313,10 +342,53 @@ namespace Client
             groupBoxNova.Controls.OfType<Label>().ToList().ForEach(gb => gb.BackColor = Color.LightGray);
         }
 
+
+        private void GroupGroupBox_MouseClick(object sender, EventArgs e)
+        {
+            var gb = (GroupBox)sender;
+            ChangeCurrentGroup(gb.Name.Replace("Group_", ""));
+        }
+
+        private void GroupLabelGroupBox_MouseClick(object sender, EventArgs e)
+        {
+            var label = (Label)sender;
+            if (label.Parent == null) return;
+            ChangeCurrentGroup(label.Parent.Name.Replace("Group_",""));
+        }
+
+        private void ChangeCurrentGroup(string groupName)
+        {
+            GroupsflowLayoutPanel.Controls.OfType<GroupBox>().ToList().ForEach(gb =>
+            {
+                gb.BackColor = Color.Transparent;
+                gb.Controls.OfType<Label>().ToList().ForEach(gb => gb.BackColor = Color.Transparent);
+            });
+            ChatRichTextBox.Enabled = true;
+            messageTextBox.Enabled = true;
+            sendButton.Enabled = true;
+            TypingTimer_Tick(new object(), EventArgs.Empty);
+            LoadGroupMessagesOnScreen(groupName);
+            _currentGroup = groupName;
+            var groupBoxNova = GroupsflowLayoutPanel.Controls.Find($"Group_{groupName}", true).FirstOrDefault() as GroupBox;
+            if (groupBoxNova == null) return;
+            groupBoxNova.BackColor = Color.LightGray;
+            groupBoxNova.Controls.OfType<Label>().ToList().ForEach(gb => gb.BackColor = Color.LightGray);
+        }
+
+
         private void LoadMessagesOnScreen(string contact)
         {
             ChatRichTextBox.Clear();
             foreach (var message in _messageStore.GetContactMessages(contact))
+            {
+                AddMessageOnScreen(message.Sender, message.Content, message.Timestamp);
+            }
+        }
+
+        private void LoadGroupMessagesOnScreen(string groupName)
+        {
+            ChatRichTextBox.Clear();
+            foreach (var message in _messageStore.GetGroupMessages(groupName))
             {
                 AddMessageOnScreen(message.Sender, message.Content, message.Timestamp);
             }
@@ -340,6 +412,7 @@ namespace Client
             }
             else
             {
+                if (IsOnGroupScreen) return;
                 if (!_typingTimer.Enabled)
                 {
                     _networkClient.SendMessageAsync(Mensagens.Client.Chat.Private.Typing.Start(_currentContact)).Wait();
@@ -368,12 +441,6 @@ namespace Client
 
                 }
             }
-        }
-
-        private void tabControl1_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (tabControl1.SelectedIndex == 0) _isOnGroupScreen = false;
-            if (tabControl1.SelectedIndex == 1) _isOnGroupScreen = true;
         }
     }
 }

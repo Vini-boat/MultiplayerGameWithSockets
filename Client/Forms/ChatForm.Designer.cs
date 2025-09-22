@@ -34,8 +34,6 @@
             ContactsflowLayoutPanel = new FlowLayoutPanel();
             Grupos = new TabPage();
             GroupsflowLayoutPanel = new FlowLayoutPanel();
-            groupBox2 = new GroupBox();
-            label2 = new Label();
             flowLayoutPanel2 = new FlowLayoutPanel();
             NewGroupButton = new Button();
             Configurações = new TabPage();
@@ -51,8 +49,6 @@
             tabControl1.SuspendLayout();
             Contatos.SuspendLayout();
             Grupos.SuspendLayout();
-            GroupsflowLayoutPanel.SuspendLayout();
-            groupBox2.SuspendLayout();
             flowLayoutPanel2.SuspendLayout();
             Configurações.SuspendLayout();
             flowLayoutPanel4.SuspendLayout();
@@ -88,7 +84,6 @@
             tabControl1.SelectedIndex = 0;
             tabControl1.Size = new Size(266, 450);
             tabControl1.TabIndex = 0;
-            tabControl1.SelectedIndexChanged += tabControl1_SelectedIndexChanged;
             // 
             // Contatos
             // 
@@ -125,33 +120,11 @@
             // GroupsflowLayoutPanel
             // 
             GroupsflowLayoutPanel.AutoScroll = true;
-            GroupsflowLayoutPanel.Controls.Add(groupBox2);
             GroupsflowLayoutPanel.Dock = DockStyle.Bottom;
             GroupsflowLayoutPanel.Location = new Point(3, 37);
             GroupsflowLayoutPanel.Name = "GroupsflowLayoutPanel";
             GroupsflowLayoutPanel.Size = new Size(252, 382);
             GroupsflowLayoutPanel.TabIndex = 1;
-            // 
-            // groupBox2
-            // 
-            groupBox2.Controls.Add(label2);
-            groupBox2.Location = new Point(3, 3);
-            groupBox2.Name = "groupBox2";
-            groupBox2.Size = new Size(230, 45);
-            groupBox2.TabIndex = 1;
-            groupBox2.TabStop = false;
-            groupBox2.Text = "Grupo1";
-            // 
-            // label2
-            // 
-            label2.AutoEllipsis = true;
-            label2.AutoSize = true;
-            label2.Location = new Point(6, 19);
-            label2.MaximumSize = new Size(220, 20);
-            label2.Name = "label2";
-            label2.Size = new Size(220, 20);
-            label2.TabIndex = 0;
-            label2.Text = "10:10 - [Nick] - a a a a a a a a a a a a a a a a a a a a a ";
             // 
             // flowLayoutPanel2
             // 
@@ -255,9 +228,6 @@
             Contatos.ResumeLayout(false);
             Grupos.ResumeLayout(false);
             Grupos.PerformLayout();
-            GroupsflowLayoutPanel.ResumeLayout(false);
-            groupBox2.ResumeLayout(false);
-            groupBox2.PerformLayout();
             flowLayoutPanel2.ResumeLayout(false);
             flowLayoutPanel2.PerformLayout();
             Configurações.ResumeLayout(false);
@@ -282,7 +252,5 @@
         private TextBox messageTextBox;
         private FlowLayoutPanel flowLayoutPanel4;
         private Button button3;
-        private GroupBox groupBox2;
-        private Label label2;
     }
 }
