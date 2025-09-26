@@ -8,10 +8,15 @@ namespace Client
         [STAThread]
         static void Main()
         {
-            // To customize application configuration such as set high DPI settings or default font,
-            // see https://aka.ms/applicationconfiguration.
+            NetworkClient networkClient = new NetworkClient();
+
             ApplicationConfiguration.Initialize();
-            Application.Run(new MainForm());
+            var loginform = new Login(networkClient);
+            if (loginform.ShowDialog() == DialogResult.OK)
+            {
+                Application.Run(new ChatForm(networkClient, loginform.Nickname));
+
+            }
         }
     }
 }
