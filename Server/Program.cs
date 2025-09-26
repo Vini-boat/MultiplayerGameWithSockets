@@ -19,7 +19,7 @@ public class Program
             .CreateLogger();
 
 
-        string ip = "127.0.0.1";
+        string ip = "0.0.0.0";
         int port = 8888;
 
         ServerManager server = new ServerManager(ip,port);
